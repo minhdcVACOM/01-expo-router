@@ -6,6 +6,7 @@ import imgBackground from "@/assets/images/auth/welcome-background.png";
 import logoFacebook from "@/assets/images/auth/facebook.png";
 import logoGoogle from "@/assets/images/auth/google.png";
 import { LinearGradient } from 'expo-linear-gradient';
+import { Link, Redirect } from "expo-router";
 
 const styles = StyleSheet.create({
     headerText: {
@@ -25,6 +26,11 @@ const styles = StyleSheet.create({
     }
 });
 const WelCome = () => {
+    if (true) {
+        return (
+            <Redirect href={"/(auth)/signup"} />
+        );
+    }
     return (
         <ImageBackground style={{ flex: 1, alignSelf: "stretch" }} source={imgBackground}>
             <LinearGradient
@@ -60,7 +66,11 @@ const WelCome = () => {
                             onPress={() => { alert("click me") }}
                             btnStyle={{ borderColor: APP_COLOR.SECOND1 }}
                         />
-                        <Text style={{ textAlign: "center", color: "white" }}>Quên mật khẩu? Đăng ký</Text>
+                        <Text style={{ textAlign: "center", color: "white" }}>Quên mật khẩu?
+                            <Link href={"/(auth)/signup"}>
+                                <Text style={{ fontWeight: "600", textDecorationLine: "underline" }}> Đăng ký</Text>
+                            </Link>
+                        </Text>
                     </View>
                 </View>
             </LinearGradient>

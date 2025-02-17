@@ -7,7 +7,8 @@ export const APP_COLOR = {
     SECOND2: "#f5e6e8",
     SECOND_TEXT: "#212121",
 
-    BG_ORANGE: "#f4511e",
+    BG_DARKORANGE: "#f4511e",
+    BG_ORANGE: "#FF8C00",
     BG_PURPLE: "#a020f0",
     BG_YELLOW: "#ffff00"
 }
