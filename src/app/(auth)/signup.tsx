@@ -1,14 +1,29 @@
 import VcButton from "@/components/vcbutton";
 import VcInput from "@/components/vcinput";
 import { Link } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import Toast from 'react-native-root-toast';
+import { apiGetTenant } from "@/utils/api";
+import { APP_COLOR } from "@/utils/constant";
 const SignUp = () => {
+
     const [name, setName] = useState<string>();
     const [email, setEmail] = useState<string>();
     const [passWord, setPassWord] = useState<string>();
+    useEffect(() => {
+        const fetchApi = async () => {
+            try {
+                const res = await apiGetTenant();
+                Toast.show(res.tenantId);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        fetchApi();
+    }, []);
+
     return (
         <SafeAreaView>
             <View style={{ alignItems: "center", justifyContent: "center", marginVertical: 20 }}>

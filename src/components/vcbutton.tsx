@@ -3,8 +3,8 @@ import { ReactNode } from "react";
 import { APP_COLOR } from "@/utils/constant";
 const styles = StyleSheet.create({
     btnContainer: {
-        borderColor: APP_COLOR.PRIMARY1,
-        backgroundColor: APP_COLOR.PRIMARY2,
+        borderColor: APP_COLOR.MEDIUM,
+        backgroundColor: APP_COLOR.BG_DARKRED,
         borderWidth: 1,
         borderRadius: 20,
         padding: 10,
