@@ -19,7 +19,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.anonymous.x04exporouter04exporouterhelloworld"
     },
     "web": {
       "bundler": "metro",
@@ -29,12 +30,14 @@
     "plugins": [
       "expo-router",
       "expo-font",
-      ["expo-build-properties",
-      {
-        "android": {
-          "usesCleartextTraffic": true
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
         }
-      }]
+      ]
     ],
     "experiments": {
       "typedRoutes": true

@@ -6,7 +6,7 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 const styles = StyleSheet.create({
     container: {
         marginHorizontal: 20,
-        marginVertical: 5
+        marginVertical: 0
     },
     title: {
         marginLeft: 10,
@@ -16,8 +16,8 @@ const styles = StyleSheet.create({
         alignSelf: "flex-start",
         paddingHorizontal: 10,
         borderTopRightRadius: 20,
-        borderTopLeftRadius: 7,
-        borderBottomLeftRadius: 7,
+        borderTopLeftRadius: 6,
+        borderBottomLeftRadius: 6,
         color: "#fff"
     },
     error: {
@@ -27,9 +27,10 @@ const styles = StyleSheet.create({
         fontStyle: "italic"
     },
     input: {
-        borderWidth: 1,
-        borderRadius: 10,
-        flex: 1
+        borderWidth: 0.2,
+        borderRadius: 6,
+        flex: 1,
+        backgroundColor: "#fff"
     },
     icon: {
         position: "absolute",
@@ -43,16 +44,21 @@ interface IProgs {
     placeholder?: string,
     keyboardType?: KeyboardTypeOptions,
     secureTextEntry?: boolean,
+    autoCapitalize?: "none" | "sentences" | "words" | "characters" | undefined,
+    autoFocus?: boolean,
     value?: any,
-    setValue?: (v: any) => void
+    onChangeText?: any,
+    onBlur?: () => void
 }
 const VcInput = (progs: IProgs) => {
     const [isFocus, setIsFocus] = useState<boolean>(false);
     const [isShowPass, setIsShowPass] = useState<boolean>(false);
-    const { label, textError, placeholder, keyboardType, secureTextEntry, value, setValue } = progs;
-    const color = textError ? (isFocus ? APP_COLOR.BG_DARKORANGE : APP_COLOR.BG_ORANGE) : (isFocus ? APP_COLOR.PRIMARY1 : APP_COLOR.PRIMARY2);
+    const { label, textError, placeholder,
+        keyboardType, secureTextEntry, autoCapitalize, autoFocus, value,
+        onChangeText, onBlur } = progs;
+    const color = textError ? (isFocus ? APP_COLOR.BG_DARKORANGE : APP_COLOR.BG_ORANGE) : (isFocus ? APP_COLOR.BG_DARKORANGE : APP_COLOR.BG_DARKRED);
     const _setValue = (v: any) => {
-        if (setValue) setValue(v);
+        if (onChangeText) onChangeText(v);
     }
     return (
         <View style={styles.container}>
@@ -60,10 +66,14 @@ const VcInput = (progs: IProgs) => {
             <View style={{ flexDirection: "row" }}>
                 <TextInput
                     onFocus={() => setIsFocus(true)}
-                    onBlur={() => setIsFocus(false)}
+                    onBlur={() => {
+                        setIsFocus(false);
+                        if (onBlur) onBlur();
+                    }}
                     style={[styles.input, { borderColor: color }]}
+                    autoFocus={autoFocus}
                     autoCorrect={false}
-                    autoCapitalize="none"
+                    autoCapitalize={!autoCapitalize ? "none" : autoCapitalize}
                     placeholder={placeholder}
                     keyboardType={keyboardType}
                     secureTextEntry={secureTextEntry && !isShowPass}

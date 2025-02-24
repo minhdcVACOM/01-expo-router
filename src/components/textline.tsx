@@ -7,8 +7,7 @@ const styles = StyleSheet.create({
         marginVertical: 10
     },
     line: {
-        borderBottomWidth: 1,
-        paddingHorizontal: 50
+        borderBottomWidth: 1
     },
     text: {
         position: "relative",
@@ -17,16 +16,18 @@ const styles = StyleSheet.create({
 });
 interface IProgs {
     text: string,
-    color?: string
+    color?: string,
+    sizeLine?: number
 }
 const TextLine = (progs: IProgs) => {
     const { text } = progs;
     const color = progs.color ?? "white";
+    const sizeLine = progs.sizeLine ?? 40;
     return (
         <View style={styles.container}>
-            <View style={[styles.line, { borderBottomColor: color }]}></View>
+            <View style={[styles.line, { borderBottomColor: color, paddingHorizontal: sizeLine }]}></View>
             <Text style={[styles.text, { color: color }]}>{text}</Text>
-            <View style={[styles.line, { borderBottomColor: color }]}></View>
+            <View style={[styles.line, { borderBottomColor: color, paddingHorizontal: sizeLine }]}></View>
         </View>
     );
 }
