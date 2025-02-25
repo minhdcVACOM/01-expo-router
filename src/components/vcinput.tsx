@@ -1,6 +1,6 @@
 import { APP_COLOR } from "@/utils/constant";
 import { useState } from "react";
-import { KeyboardTypeOptions, StyleSheet, Text, TextInput, View } from "react-native";
+import { KeyboardTypeOptions, StyleProp, StyleSheet, Text, TextInput, TextStyle, View } from "react-native";
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
 const styles = StyleSheet.create({
@@ -48,7 +48,7 @@ interface IProgs {
     autoFocus?: boolean,
     value?: any,
     onChangeText?: any,
-    onBlur?: () => void
+    onBlur?: (e: any) => void,
 }
 const VcInput = (progs: IProgs) => {
     const [isFocus, setIsFocus] = useState<boolean>(false);
@@ -66,9 +66,9 @@ const VcInput = (progs: IProgs) => {
             <View style={{ flexDirection: "row" }}>
                 <TextInput
                     onFocus={() => setIsFocus(true)}
-                    onBlur={() => {
+                    onBlur={(e) => {
                         setIsFocus(false);
-                        if (onBlur) onBlur();
+                        if (onBlur) onBlur(e);
                     }}
                     style={[styles.input, { borderColor: color }]}
                     autoFocus={autoFocus}

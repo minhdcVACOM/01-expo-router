@@ -7,17 +7,23 @@ import { Image, StyleSheet, Text, View } from "react-native";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { LinearGradient } from "expo-linear-gradient";
+import { apiGetLogo } from "@/utils/api";
 const styles = StyleSheet.create({
     header: {
-        backgroundColor: APP_COLOR.PRIMARY2
+        backgroundColor: APP_COLOR.BG_DARKRED
     },
     logo: {
         flexDirection: "row",
-        justifyContent: "space-between",
-        marginRight: 10,
-        marginLeft: 110,
+        justifyContent: "center",
         marginTop: 10,
         gap: 10
+    },
+    image: {
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        borderWidth: 0.5,
+        borderColor: APP_COLOR.PRIMARY2
     },
     content: {
         flex: 1
@@ -25,25 +31,28 @@ const styles = StyleSheet.create({
     footer: {
         flexDirection: "row",
         borderTopWidth: 0.2,
-        borderColor: APP_COLOR.PRIMARY2,
+        borderTopColor: APP_COLOR.BG_DARKRED,
+        backgroundColor: APP_COLOR.SECOND2
     }
 });
 const VcDrawerContent = (props: any) => {
     const { params, navigation } = props;
     const router = useRouter();
-    const [logo, setLogo] = useState<string>("http://crm.vacom.vn/Content/imgs/userprofile.png");
+    const [logo, setLogo] = useState<string>();
     useEffect(() => {
-
+        apiGetLogo((res) => {
+            setLogo(res.data);
+        })
     }, []);
     return (
         <View style={{ flex: 1 }}>
             <LinearGradient
-                colors={[APP_COLOR.PRIMARY2, 'transparent']}
-                locations={[0.2, 0.8]}
+                colors={[APP_COLOR.BG_DARKRED, APP_COLOR.SECOND2]}
+                locations={[0.1, 0.8]}
             >
-                <View style={{ borderBottomWidth: 0.2, borderBottomColor: APP_COLOR.PRIMARY2 }}>
+                <View style={{ borderBottomWidth: 0.2, borderBottomColor: APP_COLOR.BG_DARKRED }}>
                     <View style={styles.logo}>
-                        <Image style={{ width: 60, height: 60, borderRadius: 50 }} source={{ uri: logo }} />
+                        <Image style={styles.image} source={{ uri: logo }} />
                         <VcButton
                             title={params.code}
                             onPress={() => {
@@ -52,8 +61,9 @@ const VcDrawerContent = (props: any) => {
                                     params: params
                                 });
                             }}
-                            btnStyle={{ backgroundColor: APP_COLOR.SECOND2 }}
-                            textStyle={{ color: "#000" }}
+                            btnStyle={{ backgroundColor: APP_COLOR.BG_DARKRED, borderRadius: 20 }}
+                            textStyle={{ color: "#fff" }}
+                            pressStyle={{ position: "absolute", right: 10, alignSelf: "center" }}
                         />
                     </View>
                     <Text style={{ fontFamily: "600", fontSize: 20, textAlign: "center" }}>{params.username}</Text>

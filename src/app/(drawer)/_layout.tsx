@@ -3,8 +3,10 @@ import { Drawer } from 'expo-router/drawer';
 import { useLocalSearchParams } from 'expo-router';
 import VcDrawerContent from '../../components/drawercontent';
 import { APP_COLOR } from '@/utils/constant';
-import Entypo from '@expo/vector-icons/Entypo';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { View } from 'react-native-animatable';
+import Entypo from '@expo/vector-icons/Entypo';
+import VcButton from '@/components/vcbutton';
 
 const LayoutDrawer = () => {
     const res = useLocalSearchParams();
@@ -14,17 +16,28 @@ const LayoutDrawer = () => {
                 drawerContent={(progs) => (<VcDrawerContent params={res} {...progs} />)}
                 screenOptions={{
                     drawerActiveTintColor: APP_COLOR.SECOND_TEXT,
-                    drawerActiveBackgroundColor: APP_COLOR.SECOND1,
+                    drawerActiveBackgroundColor: APP_COLOR.SECOND2,
                     drawerStyle: {
                         width: 280
                     },
                     headerStyle: {
-                        backgroundColor: APP_COLOR.PRIMARY2
+                        backgroundColor: APP_COLOR.BG_DARKRED
                     },
                     headerTintColor: "#fff",
                     drawerItemStyle: {
                         borderRadius: 15,
-                    }
+                    },
+                    // header: (props: any) => {
+                    //     const { navigation } = props;
+                    //     return (
+                    //         <VcButton
+                    //             onPress={() => navigation.toggleDrawer()}
+                    //             icon={<Entypo name="menu" size={24} color="black" />}
+                    //             pressStyle={{ position: "absolute", zIndex: 2 }}
+                    //             btnStyle={{ backgroundColor: APP_COLOR.SECOND2, borderRadius: 50 }}
+                    //         />
+                    //     )
+                    // }
                 }}
             >
                 <Drawer.Screen

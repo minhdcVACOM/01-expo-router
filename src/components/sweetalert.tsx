@@ -8,16 +8,24 @@ import {
   StyleSheet,
 } from "react-native";
 import * as Animatable from "react-native-animatable";
+import VcInput from "./vcinput";
+import { APP_COLOR } from "@/utils/constant";
 
+interface IOptionInput {
+  labelInput: string;
+  valueInput?: () => string
+}
 type SweetAlertProps = {
   title?: string;
-  text: string;
+  text?: string;
   showCancelButton: boolean;
-  cancelButtonText: string;
+  showIcon?: boolean;
+  cancelButtonText?: string;
   confirmButtonText: string;
-  onConfirm: () => void;
-  onClose: () => void;
-  type: "info" | "success" | "danger" | "warning" | "question";
+  onConfirm: (v?: any) => void;
+  onClose?: () => void;
+  type?: "info" | "success" | "danger" | "warning" | "question" | "setting";
+  optionInput?: IOptionInput
 };
 
 const style = StyleSheet.create({
@@ -30,10 +38,10 @@ const style = StyleSheet.create({
   },
   customSweetAlertBox: {
     width: "90%",
-    paddingHorizontal: 15,
-    paddingVertical: 20,
+    paddingHorizontal: 0,
+    paddingVertical: 10,
     backgroundColor: "#fff",
-    borderRadius: 5,
+    borderRadius: 6,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -54,7 +62,7 @@ const style = StyleSheet.create({
     borderRadius: 160,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 15,
+    marginBottom: 10,
   },
   customAlertIconFa: {
     color: "#009ddf",
@@ -73,17 +81,17 @@ const style = StyleSheet.create({
     width: "100%",
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 20,
+    marginTop: 10,
     justifyContent: "center",
     gap: 10,
   },
   customSweetAlertButton: {
     height: 35,
-    paddingHorizontal: 25,
+    paddingHorizontal: 10,
     backgroundColor: "rgba(0,0,0,0.3)",
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 5,
+    borderRadius: 6,
   },
   customSweetAlertButtonText: {
     color: "#fff",
@@ -96,16 +104,19 @@ const SweetAlert: React.FC = () => {
   const [title, setTitle] = useState<string>("");
   const [text, setText] = useState<string>("");
   const [showCancelButton, setShowCancelButton] = useState<boolean>(false);
+  const [showIcon, setShowIcon] = useState<boolean>(true);
   const [cancelButtonText, setCancelButtonText] = useState<string>("");
   const [confirmButtonText, setConfirmButtonText] = useState<string>("");
-  const [onConfirm, setOnConfirm] = useState<() => void>(() => { });
+  const [onConfirm, setOnConfirm] = useState<(v?: any) => void>((v?: any) => { });
   const [onClosing, setOnClosing] = useState<() => void>(() => { });
   const [iconName, setIconName] = useState<string>("");
   const [iconColor, setIconColor] = useState<string>("");
+  const [optionInput, setOptionInput] = useState<IOptionInput>();
+  const [inputValue, setInputValue] = useState<string>("");
 
   const handleConfirm = () => {
     setShowModal(false);
-    onConfirm();
+    onConfirm({ inputValue: inputValue });
   };
 
   const closeModal = () => {
@@ -116,6 +127,7 @@ const SweetAlert: React.FC = () => {
   };
 
   const showSweetAlert = (params: SweetAlertProps) => {
+
     const {
       title,
       text,
@@ -125,43 +137,50 @@ const SweetAlert: React.FC = () => {
       onConfirm,
       onClose,
       type,
+      showIcon,
+      optionInput
     } = params;
-
     setTitle(title ?? "");
-    setText(text);
+    setText(text ?? "");
     setShowCancelButton(showCancelButton);
-    setCancelButtonText(cancelButtonText);
+    setShowIcon(showIcon ?? true);
+    setCancelButtonText(cancelButtonText ?? "");
     setConfirmButtonText(confirmButtonText);
-    setOnConfirm(() => onConfirm);
+    setOnConfirm((v?: any) => onConfirm);
     setOnClosing(() => onClose);
+    setOptionInput(optionInput);
 
+    if (optionInput) setInputValue(optionInput.valueInput ? optionInput.valueInput() : "");
     switch (type) {
       case "info":
         setIconName("info");
-        setIconColor("#3498db");
+        setIconColor(APP_COLOR.BLUE);
         break;
       case "success":
         setIconName("check");
-        setIconColor("#2ecc71");
+        setIconColor(APP_COLOR.GREEN);
         break;
       case "danger":
         setIconName("times");
-        setIconColor("#e74c3c");
+        setIconColor(APP_COLOR.RED);
         break;
       case "warning":
         setIconName("exclamation");
-        setIconColor("#f39c12");
+        setIconColor(APP_COLOR.YELLOW);
         break;
       case "question":
         setIconName("question");
-        setIconColor("#3498db");
+        setIconColor(APP_COLOR.YELLOW);
+        break;
+      case "setting":
+        setIconName("archive");
+        setIconColor(APP_COLOR.PURPLE);
         break;
       default:
         setIconName("");
         setIconColor("");
         break;
     }
-
     setShowModal(true);
   };
 
@@ -172,7 +191,7 @@ const SweetAlert: React.FC = () => {
       <Modal animationType="fade" visible={showModal} transparent={true}>
         <View style={style.customSweetAlertOuter}>
           <Animatable.View animation="bounceIn" style={style.customSweetAlertBox}>
-            <Animatable.View
+            {showIcon && <Animatable.View
               animation="jello"
               duration={500}
               style={[
@@ -194,9 +213,12 @@ const SweetAlert: React.FC = () => {
                   name={iconName}
                 />
               </Animatable.View>
-            </Animatable.View>
+            </Animatable.View>}
             {title && <Text style={style.customSweetAlertTitle}>{title}</Text>}
-            <Text style={style.customSweetAlertText}>{text}</Text>
+            {text && <Text style={style.customSweetAlertText}>{text}</Text>}
+            <View style={{ width: "100%" }}>
+              {optionInput && <VcInput label={optionInput.labelInput} value={inputValue} onChangeText={setInputValue} />}
+            </View>
             <View style={style.customSweetAlertButtons}>
               {showCancelButton && (
                 <TouchableOpacity
@@ -204,7 +226,9 @@ const SweetAlert: React.FC = () => {
                   style={[
                     style.customSweetAlertButton,
                     {
-                      backgroundColor: "#e74c3c",
+                      backgroundColor: "#fff",
+                      borderColor: iconColor,
+                      borderWidth: 1
                     },
                   ]}
                 >
@@ -212,7 +236,7 @@ const SweetAlert: React.FC = () => {
                     style={[
                       style.customSweetAlertButtonText,
                       {
-                        color: "#fff",
+                        color: iconColor
                       },
                     ]}
                   >
@@ -225,7 +249,7 @@ const SweetAlert: React.FC = () => {
                 style={[
                   style.customSweetAlertButton,
                   {
-                    backgroundColor: "#81ea74",
+                    backgroundColor: iconColor,
                   },
                 ]}
               >
@@ -233,7 +257,7 @@ const SweetAlert: React.FC = () => {
                   style={[
                     style.customSweetAlertButtonText,
                     {
-                      color: "#000",
+                      color: "#fff",
                     },
                   ]}
                 >

@@ -6,6 +6,7 @@ import BackGroundScreen from "@/components/backgroundscreen";
 import React from "react";
 // @ts-ignore:next-line
 import image from "@/assets/images/auth/screen3.jpg";
+import SweetAlert from "@/components/sweetalert";
 
 const styles = StyleSheet.create({
     headerText: {
@@ -38,6 +39,7 @@ const StartScreen = () => {
                     <Text style={styles.sloganText}>Gìn giữ sự hài lòng</Text>
                 </View>
                 <LoginScreen />
+                <SweetAlert />
             </View>
         </BackGroundScreen>
     );

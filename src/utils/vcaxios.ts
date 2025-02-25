@@ -1,10 +1,33 @@
 import axios from "axios";
 import { Helper } from "./helper";
 import { Keyboard } from "react-native";
-const vcAxios = axios.create({ baseURL: process.env.EXPO_PUBLIC_API_URL });
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { APP_KEY } from "./constant";
+
+const vcAxios = axios.create(
+    // { baseURL: process.env.EXPO_PUBLIC_API_URL }
+);
+const getBaseUrl = async () => {
+    try {
+        return await AsyncStorage.getItem(APP_KEY.KEY_API) ?? process.env.EXPO_PUBLIC_API_URL;
+    } catch (error) {
+        return process.env.EXPO_PUBLIC_API_URL;
+    }
+}
+const getToken = async () => {
+    try {
+        return await AsyncStorage.getItem(APP_KEY.KEY_TOKEN);
+    } catch (error) {
+        return null;
+    }
+}
 // Add a request interceptor
-vcAxios.interceptors.request.use(function (config) {
+vcAxios.interceptors.request.use(async (config) => {
     // Do something before request is sent
+    const baseURL = await getBaseUrl();
+    if (baseURL) config.baseURL = baseURL;
+    const token = await getToken();
+    if (token) config.headers["Authorization"] = "Bearer " + token;
     Keyboard.dismiss();
     config.headers["Accept-language"] = "vi";
     return config;

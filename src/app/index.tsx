@@ -1,5 +1,4 @@
 import StartScreen from "./start";
-
 const appRoot = () => {
     // if (true) {
     //     return (

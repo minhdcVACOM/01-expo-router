@@ -1,7 +1,7 @@
 import VcButton from "@/components/vcbutton";
 import VcInput from "@/components/vcinput";
 import OTPTextView from 'react-native-otp-textinput';
-import { Alert, Pressable, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import { apiRecoverPass, apiSendOtp } from "@/utils/api";
 import { APP_COLOR } from "@/utils/constant";
 import { Helper } from "@/utils/helper";
@@ -11,7 +11,7 @@ import React, { useState } from "react";
 import { Formik } from 'formik';
 import BackGroundScreen from "@/components/backgroundscreen";
 import { forgotPassSchema } from "@/utils/validate";
-import SweetAlert, { showSweetAlert } from "@/components/sweetalert";
+import { showSweetAlert } from "@/components/sweetalert";
 
 interface IParams {
     tenant?: string
@@ -42,28 +42,39 @@ const ForgotPass = () => {
     }
     const recoverPass = (tenant: string, email: string, otp: string) => {
         if (!otp || otp.length < 6) {
-            console.log("lỗi");
             showSweetAlert({
                 // title: 'Thông báo',
                 text: 'Bạn chưa nhập đủ mã OTP',
-                showCancelButton: true,
-                cancelButtonText: 'Hủy bỏ',
+                showCancelButton: false,
+                // cancelButtonText: 'Hủy bỏ',
                 confirmButtonText: 'Xác nhận',
                 onConfirm: () => {
-                    console.log('Confirmed');
+                    // console.log('Confirmed');
                 },
-                onClose: () => {
-                    console.log('Closed');
-                },
+                // onClose: () => {
+                //     console.log('Closed');
+                // },
                 type: 'question', // 'info', 'success', 'danger', 'warning' , "question"
             });
             return;
         }
         apiRecoverPass(tenant, email, otp, (res) => {
             Helper.toastShow(res.msg);
+            // router.replace("/start");
             router.back();
         }, (loading) => setLoading(loading));
     }
+    // useEffect(() => {
+    //     const backAction = () => {
+    //         router.replace("/start");
+    //         return true;
+    //     };
+    //     const backHandler = BackHandler.addEventListener(
+    //         'hardwareBackPress',
+    //         backAction,
+    //     );
+    //     return () => backHandler.remove();
+    // }, [])
     return (
         <>
             <BackGroundScreen>
@@ -81,6 +92,7 @@ const ForgotPass = () => {
                                 label="Mã truy cập"
                                 value={values.tenant}
                                 onChangeText={handleChange('tenant')}
+                                onBlur={handleBlur('tenant')}
                                 placeholder="Nhập mã truy cập"
                                 autoCapitalize="characters"
                                 textError={errors.tenant}
@@ -89,6 +101,7 @@ const ForgotPass = () => {
                                 label="Hòm thư"
                                 value={values.email}
                                 onChangeText={handleChange('email')}
+                                onBlur={handleBlur('email')}
                                 placeholder="Nhập địa chỉ hòm thư"
                                 keyboardType="email-address"
                                 textError={errors.email}
@@ -131,7 +144,6 @@ const ForgotPass = () => {
                 </Formik>
             </BackGroundScreen>
             {loading && <LoadingOverlay animating={loading && !typeSubmit ? false : true} />}
-            <SweetAlert />
         </>
     );
 }

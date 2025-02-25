@@ -54,7 +54,6 @@ export const apiLogin = async (tenant: string, username: string, password: strin
             Helper.toastShow(JSON.stringify(error), true);
         });
 }
-
 export const apiSendOtp = async (tenantName: string, email: string, callBack?: (res: any) => void, setLoading?: (loading: boolean) => void) => {
     if (setLoading) setLoading(true);
     const url = "/api/app/user/request-otp-code";
@@ -76,6 +75,40 @@ export const apiRecoverPass = async (tenantName: string, email: string, otpCode:
     if (setLoading) setLoading(true);
     const url = "/api/app/user/recover-pass";
     return vcAxios.post<IBackendRes<ISuccess>>(url, { tenantName: tenantName, email: email, otpCode: otpCode })
+        .then((res: any) => {
+            if (setLoading) setLoading(false);
+            if (res.error) {
+                Helper.showError(res.error);
+                return;
+            }
+            return callBack && callBack(res);
+        })
+        .catch(error => {
+            if (setLoading) setLoading(false);
+            Helper.toastShow(JSON.stringify(error), true);
+        });
+}
+export const apiDvcs = async (callBack: (res: any) => void, setLoading?: (loading: boolean) => void) => {
+    if (setLoading) setLoading(true);
+    const url = "/api/app/org-unit/select-to-login";
+    return await vcAxios.get(url)
+        .then((res: any) => {
+            if (setLoading) setLoading(false);
+            if (res.error) {
+                Helper.showError(res.error);
+                return;
+            }
+            return callBack && callBack(res);
+        })
+        .catch(error => {
+            if (setLoading) setLoading(false);
+            Helper.toastShow(JSON.stringify(error), true);
+        });
+}
+export const apiGetLogo = async (callBack: (res: any) => void, setLoading?: (loading: boolean) => void) => {
+    if (setLoading) setLoading(true);
+    const url = "/api/app/user/user-pic";
+    return await vcAxios.get(url)
         .then((res: any) => {
             if (setLoading) setLoading(false);
             if (res.error) {

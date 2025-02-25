@@ -2,8 +2,9 @@ import { APP_COLOR } from "@/utils/constant";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Alert, BackHandler, FlatList, Platform, StyleSheet, Text, TouchableHighlight, View } from "react-native";
 import AntDesign from '@expo/vector-icons/AntDesign';
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import BackGroundScreen from "@/components/backgroundscreen";
+import { apiDvcs } from "@/utils/api";
 
 interface IDvcs {
     code: string;
@@ -64,42 +65,37 @@ const styles = StyleSheet.create({
 const LstDvcs = () => {
     const res: any = useLocalSearchParams();
     const router = useRouter();
+    const [data, setData] = useState<IDvcs[]>([]);
     useEffect(() => {
+        // get Data
+        apiDvcs((res) => {
+            setData(res);
+        })
+        //
         const backAction = () => {
-            // Alert.alert('Thông báo!', 'Bạn có muốn quay lại màn hình Đăng nhập không?', [
-            //     {
-            //         text: 'Không',
-            //         onPress: () => null,
-            //         style: 'cancel',
-            //     },
-            //     // {text: 'YES', onPress: () => BackHandler.exitApp()},
-            //     { text: 'Có', onPress: () => router.replace("/start") },
-            // ]);
             router.replace("/start");
             return true;
         };
-
         const backHandler = BackHandler.addEventListener(
             'hardwareBackPress',
             backAction,
         );
-
         return () => backHandler.remove();
     }, []);
-    const data: IDvcs[] = [
-        {
-            code: "VP",
-            name: "Công ty cổ phần VACOM",
-            address: "Tầng 4, Tòa nhà Đa Năng, 169 Nguyễn Ngọc Vũ, Cầu Giấy, Hà Nội",
-            taxCode: "0102236276"
-        },
-        // {
-        //     code: "VAT",
-        //     name: "Công ty M-INVOICE",
-        //     address: "Tòa nhà M-invoice Kim Đồng",
-        //     taxCode: "0123456789"
-        // }
-    ];
+    // const data: IDvcs[] = [
+    //     {
+    //         code: "VP",
+    //         name: "Công ty cổ phần VACOM",
+    //         address: "Tầng 4, Tòa nhà Đa Năng, 169 Nguyễn Ngọc Vũ, Cầu Giấy, Hà Nội",
+    //         taxCode: "0102236276"
+    //     },
+    //     // {
+    //     //     code: "VAT",
+    //     //     name: "Công ty M-INVOICE",
+    //     //     address: "Tòa nhà M-invoice Kim Đồng",
+    //     //     taxCode: "0123456789"
+    //     // }
+    // ];
 
     const pressItem = (item: IDvcs) => {
         const param = Object.assign(res, { code: item.code });

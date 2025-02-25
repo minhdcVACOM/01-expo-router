@@ -11,5 +11,16 @@ export const APP_COLOR = {
     BG_DARKORANGE: "#f4511e",
     BG_ORANGE: "#FF8C00",
     BG_PURPLE: "#a020f0",
-    BG_YELLOW: "#ffff00"
+    BG_YELLOW: "#ffff00",
+
+    RED: "#e74c3c",
+    BLUE: "#3498db",
+    GREEN: "#2ecc71",
+    YELLOW: "#f39c12",
+    PURPLE: "#967aa1"
+}
+export const APP_KEY = {
+    KEY_LOGIN: "infoLogin",
+    KEY_API: "linkApi",
+    KEY_TOKEN: "token"
 }

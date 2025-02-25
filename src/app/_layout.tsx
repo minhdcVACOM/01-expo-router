@@ -1,11 +1,16 @@
+import SweetAlert from "@/components/sweetalert";
 import { APP_COLOR } from "@/utils/constant";
 import { Stack } from "expo-router";
+import React from "react";
+import { setStatusBarStyle, StatusBar } from 'expo-status-bar';
 import { RootSiblingParent } from 'react-native-root-siblings';
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const AppRoot = () => {
+const AppLayout = () => {
+    setStatusBarStyle("light");
     return (
         <RootSiblingParent>
+            {/* <StatusBar style="light" backgroundColor={APP_COLOR.BG_DARKRED} /> */}
             <SafeAreaView style={{ flex: 1 }}>
                 <Stack
                     screenOptions={{
@@ -24,7 +29,8 @@ const AppRoot = () => {
                     } />
                 </Stack>
             </SafeAreaView>
+            <SweetAlert />
         </RootSiblingParent >
     );
 }
-export default AppRoot;
+export default AppLayout;
