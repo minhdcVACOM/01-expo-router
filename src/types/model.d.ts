@@ -1,8 +1,14 @@
-import { APP_COLOR } from "@/utils/constant";
-import Toast from "react-native-root-toast";
+import Toast from react - native - root - toast;
 
 export { };
 declare global {
+    interface IDvcs {
+        id: string,
+        code: string;
+        name: string;
+        address: string;
+        taxCode: string;
+    }
     interface IBackendRes<T> {
         error?: IError;
         message: string;
@@ -35,5 +41,25 @@ declare global {
         username: string;
         token: string;
         tokenType: string;
+    }
+    interface IWindowPram {
+        windowId: string,
+        menuId: string,
+        quickSearch?: string,
+        start: number,
+        count: number,
+        continue: boolean,
+        filterRows?: any[],
+        filterAdvanced?: any,
+        tlbparam?: any[]
+    }
+    interface IMenuWindow {
+        title: string,
+        menuId: string,
+        windowId: string,
+        marginBottom?: number,
+        numRow?: number,
+        renderItem?: (item) => React.ReactNode,
+        modalItem?: (item, callBack?: (item) => void) => React.ReactNode
     }
 }

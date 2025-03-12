@@ -8,6 +8,11 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { LinearGradient } from "expo-linear-gradient";
 import { apiGetLogo } from "@/utils/api";
+import empty_logo from "@/assets/images/auth/empty_logo.png";
+import VcButtonFlat from "./vcButtonFlat";
+import { VcStore } from "@/redux/vcStore";
+import { useDispatch, useSelector } from "react-redux";
+import { setLogo } from "@/redux/slices/appSlice";
 const styles = StyleSheet.create({
     header: {
         backgroundColor: APP_COLOR.BG_DARKRED
@@ -38,12 +43,14 @@ const styles = StyleSheet.create({
 const VcDrawerContent = (props: any) => {
     const { params, navigation } = props;
     const router = useRouter();
-    const [logo, setLogo] = useState<string>();
+    const logo = useSelector((state: VcStore) => state.app.logo)
+    const [refresh, setRefresh] = useState<boolean>(false);
+    const dispatch = useDispatch();
     useEffect(() => {
         apiGetLogo((res) => {
-            setLogo(res.data);
+            dispatch(setLogo(res.data));
         })
-    }, []);
+    }, [refresh]);
     return (
         <View style={{ flex: 1 }}>
             <LinearGradient
@@ -52,7 +59,15 @@ const VcDrawerContent = (props: any) => {
             >
                 <View style={{ borderBottomWidth: 0.2, borderBottomColor: APP_COLOR.BG_DARKRED }}>
                     <View style={styles.logo}>
-                        <Image style={styles.image} source={{ uri: logo }} />
+                        <View style={{ width: 100, height: 100 }}>
+                            <Image style={styles.image} source={logo ? { uri: logo } : empty_logo} />
+                            <VcButtonFlat
+                                onPress={() => setRefresh(!refresh)}
+                                pressStyle={{ position: "absolute", bottom: -5, right: -10 }}
+                                icon={<Ionicons name="refresh-circle" size={24} color={APP_COLOR.PRIMARY2} />}
+                                type="clear"
+                            />
+                        </View>
                         <VcButton
                             title={params.code}
                             onPress={() => {
@@ -79,7 +94,7 @@ const VcDrawerContent = (props: any) => {
                     label="Cài đặt"
                     style={{ flex: 1 }}
                     onPress={() => {
-                        router.navigate("/setting");
+                        router.navigate({ pathname: "/setting", params: params });
                         setTimeout(() => { navigation.closeDrawer() }, 500);
                     }}
                     icon={({ size, color }) => (<Ionicons name="settings" size={size} color={color} />)}

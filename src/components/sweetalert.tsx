@@ -18,11 +18,11 @@ interface IOptionInput {
 type SweetAlertProps = {
   title?: string;
   text?: string;
-  showCancelButton: boolean;
+  showCancelButton?: boolean;
   showIcon?: boolean;
   cancelButtonText?: string;
-  confirmButtonText: string;
-  onConfirm: (v?: any) => void;
+  confirmButtonText?: string;
+  onConfirm?: (v?: any) => void;
   onClose?: () => void;
   type?: "info" | "success" | "danger" | "warning" | "question" | "setting";
   optionInput?: IOptionInput
@@ -116,13 +116,13 @@ const SweetAlert: React.FC = () => {
 
   const handleConfirm = () => {
     setShowModal(false);
-    onConfirm({ inputValue: inputValue });
+    if (onConfirm) onConfirm({ inputValue: inputValue });
   };
 
   const closeModal = () => {
     setShowModal(false);
     setTimeout(() => {
-      onClosing();
+      if (onClosing) onClosing();
     }, 200);
   };
 
@@ -142,10 +142,10 @@ const SweetAlert: React.FC = () => {
     } = params;
     setTitle(title ?? "");
     setText(text ?? "");
-    setShowCancelButton(showCancelButton);
+    setShowCancelButton(showCancelButton ?? false);
     setShowIcon(showIcon ?? true);
-    setCancelButtonText(cancelButtonText ?? "");
-    setConfirmButtonText(confirmButtonText);
+    setCancelButtonText(cancelButtonText ?? "Hủy bỏ");
+    setConfirmButtonText(confirmButtonText ?? "Xác nhận");
     setOnConfirm((v?: any) => onConfirm);
     setOnClosing(() => onClose);
     setOptionInput(optionInput);
@@ -173,12 +173,12 @@ const SweetAlert: React.FC = () => {
         setIconColor(APP_COLOR.YELLOW);
         break;
       case "setting":
-        setIconName("archive");
+        setIconName("cogs");
         setIconColor(APP_COLOR.PURPLE);
         break;
       default:
-        setIconName("");
-        setIconColor("");
+        setIconName("info");
+        setIconColor(APP_COLOR.BLUE);
         break;
     }
     setShowModal(true);

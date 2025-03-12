@@ -8,9 +8,9 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "androidStatusBar": {
-       "backgroundColor": "#a23226",
+       "backgroundColor": "#fffff1",
        "translucent": true,
-       "barStyle": "light-content"
+       "barStyle": "dark-content"
     },
     "splash": {
       "image": "./src/assets/images/splash.png",

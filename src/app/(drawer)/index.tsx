@@ -1,46 +1,68 @@
-import VcButton from "@/components/vcbutton";
-import VcDropdown from "@/components/vcdropdown";
-import VcInput from "@/components/vcinput";
-import { useRouter } from "expo-router";
-import { Button, Text, View } from "react-native";
-interface IDropDownItem {
-    value: string;
-    label: string;
+import BackGroundScreen from "@/components/backgroundscreen";
+import CustomFlatList from "@/components/customFlatList/customFlatList";
+import { showSweetAlert } from "@/components/sweetalert";
+import HomeHeader from "@/screens/home/homeHeader";
+import HomeTopList from "@/screens/home/homeTopList";
+import { apiGetDashboardCode } from "@/utils/apiHome";
+import { APP_COLOR } from "@/utils/constant";
+import { useEffect, useState } from "react";
+import { Text } from "react-native";
+import { SafeAreaView, StyleSheet, View } from "react-native";
+interface IData {
+    cusCode: string,
+    cusName: string,
+    count: number
 }
 const HomeScreen = () => {
-    const router = useRouter();
-    const data: IDropDownItem[] = [
-        { value: "1", label: "1-Item 01" },
-        { value: "2", label: "2-Item 02" },
-        { value: "3", label: "1-Item 03" },
-        { value: "4", label: "2-Item 04" },
-        { value: "5", label: "1-Item 05" },
-        { value: "6", label: "2-Item 06" },
-        { value: "7", label: "2-Item 07" },
-        { value: "8", label: "1-Item 08" },
-        { value: "9", label: "2-Item 09" }
-    ];
+    const [data, setData] = useState<IData[]>([]);
+    useEffect(() => {
+        apiGetDashboardCode("TB_CUS_SUPPORT_MAX", res => {
+            setData(res.data)
+        });
+    }, []);
     return (
-        <View style={{ flex: 1, gap: 10 }}>
-            {/* <Text>Home tab screen</Text> */}
-            <VcInput label="Mã truy cập" />
-            <VcDropdown
-                title="Chọn Item"
+        <SafeAreaView style={styles.container}>
+            <CustomFlatList
                 data={data}
-                onChange={console.log}
-                placeholder="Select country"
-                defaultValue={data[0]}
-                addTop={64}
+                renderItem={({ item }) => {
+                    return (
+                        <View style={styles.item}>
+                            <View style={{ flex: 1 }}>
+                                <Text style={{ fontWeight: "600" }}>{item.cusCode}</Text>
+                                <Text style={{ color: APP_COLOR.GRAYDARK }}>{item.cusName}</Text>
+                            </View>
+                            <Text style={{ fontWeight: "600", fontSize: 20, color: APP_COLOR.BG_ORANGE, paddingLeft: 10 }}>{item.count}</Text>
+                        </View>
+                    )
+                }}
+                HeaderComponent={<HomeHeader />}
+                StickyElementComponent={<View />}
+                TopListElementComponent={<HomeTopList />}
             />
-            <VcDropdown
-                data={data}
-                onChange={console.log}
-                placeholder="Select country"
-                defaultValue={data[0]}
-                textError="lỗi"
-                addTop={64}
-            />
-        </View>
+        </SafeAreaView>
     );
 }
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        overflow: "hidden"
+    },
+    item: {
+        borderLeftWidth: 1,
+        borderRightWidth: 1,
+        borderBottomWidth: 1,
+        borderLeftColor: APP_COLOR.MEDIUM,
+        borderRightColor: APP_COLOR.MEDIUM,
+        borderBottomColor: APP_COLOR.MEDIUM,
+        padding: 10,
+        marginHorizontal: 10,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        backgroundColor: "#fff"
+    },
+    itemText: {
+        fontWeight: "600",
+    }
+});
 export default HomeScreen;

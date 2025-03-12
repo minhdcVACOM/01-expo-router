@@ -6,7 +6,10 @@
     "paths": {
       "@/*": ["src/*"],
       "components/*": ["src/components/*"],
-      "utils/*": ["src/utils/*"]
+      "utils/*": ["src/utils/*"],
+      "screens/*": ["src/screens/*"],
+      "modals/*": ["src/modals/*"],
+      "redux/*": ["src/redux/*"],
     }
   },
   "include": [
@@ -14,5 +17,5 @@
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
-  ]
+, "src/components/sweetalert.tsx_"  ]
 }

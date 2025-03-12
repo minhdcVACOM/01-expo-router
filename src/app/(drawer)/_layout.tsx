@@ -4,9 +4,11 @@ import { useLocalSearchParams } from 'expo-router';
 import VcDrawerContent from '../../components/drawercontent';
 import { APP_COLOR } from '@/utils/constant';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { View } from 'react-native-animatable';
 import Entypo from '@expo/vector-icons/Entypo';
-import VcButton from '@/components/vcbutton';
+import AntDesign from '@expo/vector-icons/AntDesign';
+import VcButtonFlat from '@/components/vcButtonFlat';
+import React from 'react';
+import SweetAlert from '@/components/sweetalert';
 
 const LayoutDrawer = () => {
     const res = useLocalSearchParams();
@@ -21,23 +23,25 @@ const LayoutDrawer = () => {
                         width: 280
                     },
                     headerStyle: {
-                        backgroundColor: APP_COLOR.BG_DARKRED
+                        // backgroundColor: APP_COLOR.SECOND2,
+                        height: 50
                     },
-                    headerTintColor: "#fff",
+                    // headerTintColor: "#fff",
                     drawerItemStyle: {
                         borderRadius: 15,
                     },
-                    // header: (props: any) => {
-                    //     const { navigation } = props;
-                    //     return (
-                    //         <VcButton
-                    //             onPress={() => navigation.toggleDrawer()}
-                    //             icon={<Entypo name="menu" size={24} color="black" />}
-                    //             pressStyle={{ position: "absolute", zIndex: 2 }}
-                    //             btnStyle={{ backgroundColor: APP_COLOR.SECOND2, borderRadius: 50 }}
-                    //         />
-                    //     )
-                    // }
+                    header: (props: any) => {
+                        const { navigation } = props;
+                        return (
+                            <VcButtonFlat
+                                pressStyle={{ position: "absolute", top: 5, left: 5, width: 60 }}
+                                onPress={() => navigation.toggleDrawer()}
+                                icon={<AntDesign name="menu-fold" size={24} color="black" />}
+                                viewStyle={{ padding: 8 }}
+                                type="clear"
+                            />
+                        )
+                    }
                 }}
             >
                 <Drawer.Screen
@@ -50,7 +54,7 @@ const LayoutDrawer = () => {
                     }}
                 />
                 <Drawer.Screen
-                    name="menupublic" // This is the name of the page and must match the url from root
+                    name="(tabsPublic)" // This is the name of the page and must match the url from root
                     options={{
                         title: 'Menu chung',
                         drawerIcon: ({ focused, size, color }) => (

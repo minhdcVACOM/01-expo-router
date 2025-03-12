@@ -18,6 +18,14 @@ const styles = StyleSheet.create({
         color: APP_COLOR.PRIMARY_TEXT
     }
 });
+const bgColor = {
+    info: APP_COLOR.BLUE,
+    success: APP_COLOR.GREEN,
+    danger: APP_COLOR.RED,
+    warning: APP_COLOR.YELLOW,
+    question: APP_COLOR.YELLOW,
+    setting: APP_COLOR.PURPLE
+}
 interface IProgs {
     title?: string,
     onPress?: () => void,
@@ -25,17 +33,18 @@ interface IProgs {
     pressStyle?: StyleProp<TextStyle>,
     btnStyle?: StyleProp<ViewStyle>,
     icon?: ReactNode,
-    loading?: boolean
+    loading?: boolean,
+    type?: "info" | "success" | "danger" | "warning" | "question" | "setting"
 }
 const VcButton = (progs: IProgs) => {
-    const { title, onPress, textStyle, pressStyle, btnStyle, icon, loading } = progs;
+    const { title, onPress, textStyle, pressStyle, btnStyle, icon, loading, type } = progs;
     return (
         <Pressable
             disabled={loading}
             style={({ pressed }) =>
                 ([{ opacity: pressed || loading ? 0.8 : 1, alignSelf: "stretch" } as any, pressStyle])}
             onPress={onPress}>
-            <View style={[styles.btnContainer, btnStyle]}>
+            <View style={[styles.btnContainer, { backgroundColor: bgColor[type ?? "danger"] }, btnStyle]}>
                 {icon}
                 {title && <Text style={[styles.btnText, textStyle]}>{title}</Text>}
 

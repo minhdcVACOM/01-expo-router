@@ -8,9 +8,12 @@ import { useRouter } from "expo-router";
 import { Formik } from "formik";
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { Switch, Pressable, Text, View } from "react-native";
+import { Switch, Text, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { showSweetAlert } from "@/components/sweetalert";
+import VcButtonFlat from "@/components/vcButtonFlat";
+import VcCadView from "@/components/vcCardView";
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 interface IForm {
     tenant: string,
     userName: string,
@@ -37,6 +40,7 @@ const LoginScreen = () => {
                 await AsyncStorage.removeItem(APP_KEY.KEY_LOGIN);
             }
             await AsyncStorage.setItem(APP_KEY.KEY_TOKEN, res.token);
+            await AsyncStorage.setItem(APP_KEY.KEY_TENANT, res.tenantId);
             router.replace({
                 pathname: "/lstdvcs",
                 params: res
@@ -98,63 +102,65 @@ const LoginScreen = () => {
             >
                 {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
                     <View>
-                        <VcInput
-                            label="Mã truy cập"
-                            value={values.tenant}
-                            onChangeText={handleChange('tenant')}
-                            onBlur={handleBlur('tenant')}
-                            placeholder="Nhập mã truy cập"
-                            textError={errors.tenant}
-                            autoCapitalize="characters"
-                        />
-                        <VcInput
-                            label="Tên truy cập"
-                            value={values.userName}
-                            onChangeText={handleChange('userName')}
-                            onBlur={handleBlur('userName')}
-                            placeholder="Nhập tên truy cập"
-                            textError={errors.userName}
-                        />
-                        <VcInput
-                            label="Mật khẩu"
-                            value={values.passWord}
-                            onChangeText={handleChange('passWord')}
-                            onBlur={handleBlur('passWord')}
-                            placeholder="Nhập mật khẩu"
-                            textError={errors.passWord}
-                            secureTextEntry={true}
-                        />
-                        <VcButton
-                            title="Đăng nhập"
-                            onPress={handleSubmit}
-                            btnStyle={{ borderColor: APP_COLOR.SECOND1 }}
-                            pressStyle={{ paddingTop: 10, marginHorizontal: 80 }}
-                            loading={loading}
-                        />
-                        <View style={{ flexDirection: "row", marginHorizontal: 10, gap: 10, justifyContent: "center", alignItems: "center" }}>
-                            {/* <VcCheckBox label="Ghi nhớ ?" value={values.remember}
-                            // @ts-ignore:next-line
-                            /> */}
-                            <Text style={{ color: "white" }}>Ghi nhớ ?</Text>
-                            <Switch
-                                thumbColor={"white"}
-                                trackColor={{ false: '#767577', true: APP_COLOR.BG_ORANGE }}
-                                ios_backgroundColor="#3e3e3e"
-                                onValueChange={setRemember}
-                                value={remember}
+                        <VcCadView cardStyle={{ marginVertical: 0 }}>
+                            <VcButtonFlat onPress={EditLinkApi} title={apiLink}
+                                textStyle={{ color: "#fff" }}
+                                backgroundColor={APP_COLOR.GRAYDARK}
                             />
-                            <Pressable onPress={
-                                () => router.navigate({
+                            <VcInput
+                                label="Mã truy cập"
+                                icon={<FontAwesome name="database" size={20} color="gray" />}
+                                value={values.tenant}
+                                onChangeText={handleChange('tenant')}
+                                onBlur={handleBlur('tenant')}
+                                placeholder="Nhập mã truy cập"
+                                textError={errors.tenant}
+                                autoCapitalize="characters"
+                            />
+                            <VcInput
+                                label="Tên truy cập"
+                                icon={<FontAwesome name="user" size={20} color="gray" />}
+                                value={values.userName}
+                                onChangeText={handleChange('userName')}
+                                onBlur={handleBlur('userName')}
+                                placeholder="Nhập tên truy cập"
+                                textError={errors.userName}
+                            />
+                            <VcInput
+                                label="Mật khẩu"
+                                icon={<FontAwesome name="key" size={20} color="gray" />}
+                                value={values.passWord}
+                                onChangeText={handleChange('passWord')}
+                                onBlur={handleBlur('passWord')}
+                                placeholder="Nhập mật khẩu"
+                                textError={errors.passWord}
+                                secureTextEntry={true}
+                            />
+                            <VcButton
+                                title="Đăng nhập"
+                                onPress={handleSubmit}
+                                btnStyle={{ borderColor: APP_COLOR.SECOND1 }}
+                                pressStyle={{ paddingTop: 10, marginHorizontal: 80 }}
+                                loading={loading}
+                            />
+                            <View style={{ flexDirection: "row", marginHorizontal: 10, gap: 10, justifyContent: "center", alignItems: "center" }}>
+                                <Text style={{ color: "white" }}>Ghi nhớ ?</Text>
+                                <Switch
+                                    thumbColor={"white"}
+                                    trackColor={{ false: '#767577', true: APP_COLOR.BG_ORANGE }}
+                                    ios_backgroundColor="#3e3e3e"
+                                    onValueChange={setRemember}
+                                    value={remember}
+                                />
+                                <VcButtonFlat onPress={() => router.navigate({
                                     pathname: "/(auth)/forgotpass",
                                     params: { tenant: values.tenant }
-                                })
-                            }>
-                                <Text style={{ fontWeight: "600", textDecorationLine: "underline", color: APP_COLOR.BG_ORANGE }}>Quên mật khẩu?</Text>
-                            </Pressable>
-                        </View>
-                        <Pressable onPress={EditLinkApi} >
-                            <Text style={{ fontWeight: "600", textDecorationLine: "underline", color: "gray", marginBottom: 10, textAlign: "center" }}>{apiLink}</Text>
-                        </Pressable>
+                                })} title="Quên mật khẩu?"
+                                    textStyle={{ color: "#fff" }}
+                                    backgroundColor={APP_COLOR.GRAYDARK}
+                                />
+                            </View>
+                        </VcCadView>
                     </View>
                 )}
             </Formik>

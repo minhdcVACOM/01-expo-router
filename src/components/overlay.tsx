@@ -1,16 +1,17 @@
 import { APP_COLOR } from "@/utils/constant";
-import { View, StyleSheet, ActivityIndicator, ViewStyle, StyleProp } from "react-native";
+import { View, StyleSheet, ActivityIndicator, ViewStyle, StyleProp, Text } from "react-native";
 
 interface IProps {
     style?: StyleProp<ViewStyle>;
     color?: string;
     animating?: boolean;
+    title?: string;
 }
 
 const styles = StyleSheet.create({
     loading: {
         position: 'absolute',
-        zIndex: 1,
+        zIndex: 99,
         left: 0,
         right: 0,
         top: 0,
@@ -24,6 +25,7 @@ const LoadingOverlay = (props: IProps) => {
     return (
         <View style={[styles.loading, props.style]}>
             <ActivityIndicator size='large' color={props.color ?? APP_COLOR.PRIMARY2} animating={props.animating} />
+            {props.title && props.animating && <Text>{props.title}</Text>}
         </View>
     )
 }

@@ -1,12 +1,21 @@
 import { APP_COLOR } from "@/utils/constant";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import { KeyboardTypeOptions, StyleProp, StyleSheet, Text, TextInput, TextStyle, View } from "react-native";
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { ViewStyle } from "react-native";
 
 const styles = StyleSheet.create({
     container: {
-        marginHorizontal: 20,
-        marginVertical: 0
+
+    },
+    content: {
+        borderWidth: 0.5,
+        borderRadius: 6,
+        flexDirection: "row",
+        backgroundColor: "#fff",
+        alignItems: "center",
+        paddingHorizontal: 10,
+        gap: 5
     },
     title: {
         marginLeft: 10,
@@ -27,10 +36,8 @@ const styles = StyleSheet.create({
         fontStyle: "italic"
     },
     input: {
-        borderWidth: 0.2,
-        borderRadius: 6,
-        flex: 1,
-        backgroundColor: "#fff"
+        paddingTop: 10,
+        flex: 1
     },
     icon: {
         position: "absolute",
@@ -40,6 +47,8 @@ const styles = StyleSheet.create({
 });
 interface IProgs {
     label?: string,
+    icon?: ReactNode,
+    disable?: boolean,
     textError?: string,
     placeholder?: string,
     keyboardType?: KeyboardTypeOptions,
@@ -49,28 +58,33 @@ interface IProgs {
     value?: any,
     onChangeText?: any,
     onBlur?: (e: any) => void,
+    containerStyle?: StyleProp<ViewStyle>,
+    multiline?: boolean
 }
 const VcInput = (progs: IProgs) => {
     const [isFocus, setIsFocus] = useState<boolean>(false);
     const [isShowPass, setIsShowPass] = useState<boolean>(false);
-    const { label, textError, placeholder,
+    const { label, icon, disable, textError, placeholder,
         keyboardType, secureTextEntry, autoCapitalize, autoFocus, value,
-        onChangeText, onBlur } = progs;
-    const color = textError ? (isFocus ? APP_COLOR.BG_DARKORANGE : APP_COLOR.BG_ORANGE) : (isFocus ? APP_COLOR.BG_DARKORANGE : APP_COLOR.BG_DARKRED);
+        onChangeText, onBlur, containerStyle, multiline } = progs;
+    const color = disable ? APP_COLOR.GRAYDARK : textError ? (isFocus ? APP_COLOR.BG_DARKORANGE : APP_COLOR.BG_ORANGE) : (isFocus ? APP_COLOR.BG_DARKRED : APP_COLOR.PRIMARY1);
+    const HeightMultiline = multiline ? { height: 80, textAlignVertical: "top" } : {};
     const _setValue = (v: any) => {
         if (onChangeText) onChangeText(v);
     }
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, containerStyle]}>
             {label && <Text style={[styles.title, { backgroundColor: color }]}>{label} {textError && <Text style={styles.error}>{"(" + textError + ")"}</Text>}</Text>}
-            <View style={{ flexDirection: "row" }}>
+            <View style={[styles.content, { borderColor: color, backgroundColor: disable ? APP_COLOR.GRAYLIGHT : "#fff" }]}>
+                {icon}
                 <TextInput
                     onFocus={() => setIsFocus(true)}
                     onBlur={(e) => {
                         setIsFocus(false);
                         if (onBlur) onBlur(e);
                     }}
-                    style={[styles.input, { borderColor: color }]}
+                    editable={!disable}
+                    style={[styles.input, HeightMultiline] as any}
                     autoFocus={autoFocus}
                     autoCorrect={false}
                     autoCapitalize={!autoCapitalize ? "none" : autoCapitalize}
@@ -79,12 +93,13 @@ const VcInput = (progs: IProgs) => {
                     secureTextEntry={secureTextEntry && !isShowPass}
                     value={value}
                     onChangeText={(v) => _setValue(v)}
+                    multiline={multiline}
                 />
                 {secureTextEntry &&
                     <FontAwesome5
                         style={styles.icon}
                         name={isShowPass ? "eye" : "eye-slash"} size={20}
-                        color={color}
+                        color={APP_COLOR.GRAYDARK}
                         onPress={() => setIsShowPass(!isShowPass)}
                     />}
             </View>

@@ -1,7 +1,7 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { ImageBackground, StyleSheet, View } from "react-native";
 // @ts-ignore:next-line
-import screen from "@/assets/images/auth/screen2.jpg";
+import screen from "@/assets/images/auth/screen1.jpg";
 import { APP_COLOR } from "@/utils/constant";
 
 const styles = StyleSheet.create({

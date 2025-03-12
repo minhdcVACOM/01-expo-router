@@ -1,22 +1,22 @@
-import { APP_COLOR } from "@/utils/constant";
+import { APP_COLOR, APP_KEY } from "@/utils/constant";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { Alert, BackHandler, FlatList, Platform, StyleSheet, Text, TouchableHighlight, View } from "react-native";
+import { BackHandler, FlatList, RefreshControl, StyleSheet, Text, TouchableHighlight, View } from "react-native";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useEffect, useState } from "react";
-import BackGroundScreen from "@/components/backgroundscreen";
 import { apiDvcs } from "@/utils/api";
-
-interface IDvcs {
-    code: string;
-    name: string;
-    address: string;
-    taxCode: string;
-}
+import VcSearchBar from "@/components/vcSearchBar";
+import VcBackButton from "@/components/vcBackButton";
+import React from "react";
+import { TextHeader } from "@/components/textHeader";
+import { useDispatch } from "react-redux";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { setDvcs } from "@/redux/slices/appSlice";
 const styles = StyleSheet.create({
     title: {
         fontWeight: "600",
-        marginBottom: 20,
-        fontSize: 20
+        marginTop: 20,
+        fontSize: 20,
+        alignSelf: "center"
     },
     itemLayout: {
         flex: 1,
@@ -66,11 +66,12 @@ const LstDvcs = () => {
     const res: any = useLocalSearchParams();
     const router = useRouter();
     const [data, setData] = useState<IDvcs[]>([]);
+    const [txtSearch, setTxtSearch] = useState<string>("");
+    const [refresh, setRefresh] = useState<boolean>(true);
+    const dispatch = useDispatch();
     useEffect(() => {
         // get Data
-        apiDvcs((res) => {
-            setData(res);
-        })
+        getData();
         //
         const backAction = () => {
             router.replace("/start");
@@ -82,38 +83,56 @@ const LstDvcs = () => {
         );
         return () => backHandler.remove();
     }, []);
-    // const data: IDvcs[] = [
-    //     {
-    //         code: "VP",
-    //         name: "Công ty cổ phần VACOM",
-    //         address: "Tầng 4, Tòa nhà Đa Năng, 169 Nguyễn Ngọc Vũ, Cầu Giấy, Hà Nội",
-    //         taxCode: "0102236276"
-    //     },
-    //     // {
-    //     //     code: "VAT",
-    //     //     name: "Công ty M-INVOICE",
-    //     //     address: "Tòa nhà M-invoice Kim Đồng",
-    //     //     taxCode: "0123456789"
-    //     // }
-    // ];
-
-    const pressItem = (item: IDvcs) => {
-        const param = Object.assign(res, { code: item.code });
-        router.replace({
-            pathname: "/(drawer)",
-            params: param
-        });
+    const getData = () => {
+        setData([]);
+        setRefresh(true);
+        apiDvcs((res) => {
+            setData(res);
+            setRefresh(false);
+        })
     }
+    const pressItem = (item: IDvcs) => {
+        const _run = async () => {
+            await AsyncStorage.setItem(APP_KEY.DVCS_ID, item.id)
+            const param = Object.assign(res, { code: item.code });
+            dispatch(setDvcs(item));
+            router.replace({
+                pathname: "/(drawer)",
+                params: param
+            });
+        }
+        _run();
+    }
+
     return (
-        <BackGroundScreen>
-            <View style={{ flex: 1, margin: 20 }}>
-                <Text style={styles.title}>DANH SÁCH ĐƠN VỊ</Text>
+        <>
+            <VcBackButton onPress={() => router.replace("/start")} />
+            <View style={{ flex: 1, marginHorizontal: 20 }}>
+                <TextHeader title="DANH SÁCH ĐƠN VỊ" />
+                <VcSearchBar
+                    setSearchPhrase={setTxtSearch}
+                />
                 <FlatList
                     data={data}
-                    renderItem={({ item, index, separators }) => ItemView(item, res.code, pressItem)}
+                    renderItem={
+                        ({ item, index, separators }) => {
+                            if (item.name.toUpperCase().includes(txtSearch.toUpperCase().trim().replace(/\s/g, ""))) {
+                                return ItemView(item, res.code, pressItem)
+                            } else {
+                                return null;
+                            }
+                        }
+                    }
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refresh}
+                            onRefresh={() => getData()}
+                            colors={[APP_COLOR.BG_DARKRED]}
+                        />
+                    }
                 />
             </View>
-        </BackGroundScreen>
+        </>
     );
 }
 const ItemView = (item: IDvcs, code: string, pressItem: (item: IDvcs) => void) => {

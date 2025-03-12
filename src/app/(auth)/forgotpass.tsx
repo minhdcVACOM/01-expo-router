@@ -1,7 +1,7 @@
 import VcButton from "@/components/vcbutton";
 import VcInput from "@/components/vcinput";
 import OTPTextView from 'react-native-otp-textinput';
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { apiRecoverPass, apiSendOtp } from "@/utils/api";
 import { APP_COLOR } from "@/utils/constant";
 import { Helper } from "@/utils/helper";
@@ -12,6 +12,9 @@ import { Formik } from 'formik';
 import BackGroundScreen from "@/components/backgroundscreen";
 import { forgotPassSchema } from "@/utils/validate";
 import { showSweetAlert } from "@/components/sweetalert";
+import VcButtonFlat from "@/components/vcButtonFlat";
+import VcBackButton from "@/components/vcBackButton";
+import { TextHeader } from "@/components/textHeader";
 
 interface IParams {
     tenant?: string
@@ -54,7 +57,7 @@ const ForgotPass = () => {
                 // onClose: () => {
                 //     console.log('Closed');
                 // },
-                type: 'question', // 'info', 'success', 'danger', 'warning' , "question"
+                type: 'warning', // 'info', 'success', 'danger', 'warning' , "question"
             });
             return;
         }
@@ -77,72 +80,72 @@ const ForgotPass = () => {
     // }, [])
     return (
         <>
-            <BackGroundScreen>
-                <Formik
-                    initialValues={{ tenant: params.tenant!, email: '', otp: '' }}
-                    onSubmit={FormSubmit}
-                    validationSchema={forgotPassSchema}
-                >
-                    {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
-                        <View>
-                            <View style={{ alignItems: "center", justifyContent: "center", marginVertical: 20 }}>
-                                <Text style={{ fontSize: 20, fontWeight: "600" }}>QUÊN MẬT KHẨU</Text>
-                            </View>
-                            <VcInput
-                                label="Mã truy cập"
-                                value={values.tenant}
-                                onChangeText={handleChange('tenant')}
-                                onBlur={handleBlur('tenant')}
-                                placeholder="Nhập mã truy cập"
-                                autoCapitalize="characters"
-                                textError={errors.tenant}
+            <VcBackButton />
+            <Formik
+                initialValues={{ tenant: params.tenant!, email: '', otp: '' }}
+                onSubmit={FormSubmit}
+                validationSchema={forgotPassSchema}
+            >
+                {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
+                    <View>
+                        <TextHeader title="QUÊN MẬT KHẨU" />
+                        <VcInput
+                            label="Mã truy cập"
+                            value={values.tenant}
+                            onChangeText={handleChange('tenant')}
+                            onBlur={handleBlur('tenant')}
+                            placeholder="Nhập mã truy cập"
+                            autoCapitalize="characters"
+                            textError={errors.tenant}
+                        />
+                        <VcInput
+                            label="Hòm thư"
+                            value={values.email}
+                            onChangeText={handleChange('email')}
+                            onBlur={handleBlur('email')}
+                            placeholder="Nhập địa chỉ hòm thư"
+                            keyboardType="email-address"
+                            textError={errors.email}
+                        />
+                        <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginVertical: 20 }}>
+                            <Text>Nhập mã OTP</Text>
+                            <VcButtonFlat
+                                onPress={
+                                    () => {
+                                        setTypeSubmit(1);
+                                        handleSubmit();
+                                    }
+                                }
+                                title="(Lấy mã OTP)"
+                                textStyle={{ color: APP_COLOR.BG_PURPLE }}
                             />
-                            <VcInput
-                                label="Hòm thư"
-                                value={values.email}
-                                onChangeText={handleChange('email')}
-                                onBlur={handleBlur('email')}
-                                placeholder="Nhập địa chỉ hòm thư"
-                                keyboardType="email-address"
-                                textError={errors.email}
-                            />
-                            <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginVertical: 20 }}>
-                                <Text>Nhập mã OTP</Text>
-                                <Pressable onPress={() => {
-                                    setTypeSubmit(1);
-                                    handleSubmit();
-                                }} style={({ pressed }) =>
-                                    ({ opacity: pressed === true ? 0.8 : 1 })}>
-                                    <Text style={{ fontWeight: "600", color: "blue", textDecorationLine: "underline" }}> (Lấy mã OTP)</Text>
-                                </Pressable>
-                            </View>
-                            <OTPTextView
-                                defaultValue={values.otp}
-                                handleTextChange={handleChange('otp')}
-                                // ref={inputOtp}
-                                containerStyle={{ marginHorizontal: 20 }}
-                                textInputStyle={{
-                                    borderColor: APP_COLOR.PRIMARY1,
-                                    backgroundColor: "#fff",
-                                    borderWidth: 1,
-                                    borderRadius: 10,
-                                    borderBottomWidth: 1,
-                                    // @ts-ignore:next-line
-                                    color: APP_COLOR.BG_DARKRED
-                                }}
-                                inputCount={6}
-                                tintColor={APP_COLOR.PRIMARY1}
-                            />
-                            <VcButton title="Lấy lại mật khẩu" pressStyle={{ marginHorizontal: 100, marginVertical: 20 }}
-                                onPress={() => {
-                                    setTypeSubmit(0);
-                                    handleSubmit();
-                                }} loading={loading && !typeSubmit}
-                            />
-                        </View >
-                    )}
-                </Formik>
-            </BackGroundScreen>
+                        </View>
+                        <OTPTextView
+                            defaultValue={values.otp}
+                            handleTextChange={handleChange('otp')}
+                            // ref={inputOtp}
+                            containerStyle={{ marginHorizontal: 20 }}
+                            textInputStyle={{
+                                borderColor: APP_COLOR.PRIMARY1,
+                                backgroundColor: "#fff",
+                                borderWidth: 1,
+                                borderRadius: 10,
+                                borderBottomWidth: 1,
+                                // @ts-ignore:next-line
+                                color: APP_COLOR.BG_DARKRED
+                            }}
+                            inputCount={6}
+                            tintColor={APP_COLOR.PRIMARY1}
+                        />
+                        <VcButton title="Lấy lại mật khẩu" pressStyle={{ marginHorizontal: 100, marginVertical: 20 }}
+                            onPress={() => {
+                                setTypeSubmit(0);
+                                handleSubmit();
+                            }} loading={loading && !typeSubmit}
+                        />
+                    </View >
+                )}
+            </Formik>
             {loading && <LoadingOverlay animating={loading && !typeSubmit ? false : true} />}
         </>
     );
