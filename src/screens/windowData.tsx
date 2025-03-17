@@ -1,9 +1,9 @@
 import { FlatList, Pressable, RefreshControl, StyleSheet, Text, View } from "react-native";
 import VcSearchBarWin from "@/components/vcSearchBarWin";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { ReactNode, useEffect, useMemo, useState } from "react";
 import { APP_COLOR } from "@/utils/constant";
 import AntDesign from '@expo/vector-icons/AntDesign';
-import { deleteApiLink, postApiLink, putApiLink } from "@/utils/api";
+import { deleteApiLink, getApiLink, postApiLink, putApiLink } from "@/utils/api";
 import { API_LINK } from "@/utils/apiLink";
 import { Modal } from "react-native";
 import VcButtonFlat from "@/components/vcButtonFlat";
@@ -12,10 +12,26 @@ import LoadingOverlay from "@/components/overlay";
 import { showSweetAlert } from "@/components/sweetalert";
 import ItemWindow from "./itemWindow";
 import ModalWindow from "./modalWindow";
-import VcLine from "@/components/vcLine";
+import VcCadView from "@/components/vcCardView";
+import debounce from "debounce";
+import VcPicker from "@/components/vcPicker";
+import { MaterialIcons } from "@expo/vector-icons";
+import VcMenu from "@/components/vcMenu";
+import { MenuProvider } from "react-native-popup-menu";
+const ActionMenu = {
+    DELETE: "delete",
+    EDIT: "edit",
+    PRINT: "print"
+}
+interface IMenu {
+    id?: string,
+    value?: string,
+    icon?: ReactNode
+}
 const WindowData = (progs: IMenuWindow) => {
+    const { menuId, title, windowId, quickSearch, fieldSearch, status } = progs;
 
-    const { menuId, title, windowId } = progs;
+    const oStatus = (typeof status === "string" ? JSON.parse(status) : null);
 
     const [data, setData] = useState<any[]>([]);
     const [infoPage, setInfoPage] = useState({
@@ -26,17 +42,52 @@ const WindowData = (progs: IMenuWindow) => {
         isLoading: false,
         isRefresh: false
     });
+    const [winConfig, setWinConfig] = useState<{ permissions: IPermissionsWindow, voucherTemplates: IVoucherTemplate[] }>();
+    const [dataMenu, setDataMenu] = useState<IMenu[]>([]);
     const [runApi, setRunApi] = useState(false);
     const [itemSelect, setItemSelect] = useState<any | null>();
     const [modalVisible, setModalVisible] = useState(false);
-    const selectItem = (item: any) => {
+    const [textSearch, setTextSearch] = useState("");
+    const [statusId, setStatusId] = useState("");
+    const handTextSearch = debounce(async (text: string, valueStatus?: string) => {
+        setTextSearch(text);
+        if (valueStatus) setStatusId(valueStatus);
+        if (quickSearch || fieldSearch || oStatus) {
+            getData(1, () => { }, text, valueStatus);
+        }
+    }, 500)
+    const selectItem = (item: any, id?: number | string) => {
         setItemSelect(item);
-        setModalVisible(true);
+        switch (id) {
+            case ActionMenu.DELETE:
+                onDelete(item);
+                break;
+            case ActionMenu.EDIT:
+                if (winConfig?.permissions.mnEdit) setModalVisible(true);
+                break;
+            case ActionMenu.PRINT:
+                onPrint();
+                break;
+            default:
+                break;
+        }
     }
-    const getData = (pageNumber: number) => {
+
+    const getData = (pageNumber: number, callBack?: () => void, searchText?: string, valueStatus?: string) => {
         let _updateInfoPage: any = { isLoading: true, page: pageNumber, isRefresh: pageNumber === 1 };
         setInfoPage({ ...infoPage, ..._updateInfoPage });
-        const paramAdd = { menuId: menuId, windowId: windowId, start: (pageNumber - 1) * infoPage.count, count: infoPage.count };
+        const txtSearch = searchText ?? textSearch;
+        let filterRows = [];
+        if (fieldSearch) filterRows.push({ columnName: fieldSearch, columnType: "string", value: txtSearch });
+        if (oStatus) filterRows.push({ columnName: oStatus.fieldName, columnType: oStatus.fieldType, value: valueStatus ?? statusId });
+        const paramAdd = {
+            menuId: menuId,
+            windowId: windowId,
+            start: (pageNumber - 1) * infoPage.count,
+            count: infoPage.count,
+            quickSearch: quickSearch ? txtSearch : "",
+            filterRows: filterRows
+        };
         const config = {
             headers: {
                 "X-Menu": menuId,
@@ -52,11 +103,25 @@ const WindowData = (progs: IMenuWindow) => {
             _updateInfoPage.isLoading = false;
             _updateInfoPage.isRefresh = false
             setInfoPage({ ...infoPage, ..._updateInfoPage });
-        }, (v: boolean) => { }, config)
+            if (callBack) callBack();
+        }, setRunApi, config)
     }
 
     useEffect(() => {
-        getData(infoPage.page);
+        getApiLink(API_LINK.WINDOW.GET_CONFIG + menuId, ({ permissions, voucherTemplates }:
+            { permissions: IPermissionsWindow, voucherTemplates: IVoucherTemplate[] }) => {
+            setWinConfig({ permissions: permissions, voucherTemplates: voucherTemplates });
+            let menu = [];
+            if (permissions.mnDelete) menu.push({ id: ActionMenu.DELETE, value: "Xóa", icon: <MaterialIcons name="delete" size={24} color="red" /> });
+            if (permissions.mnEdit) menu.push({ id: ActionMenu.EDIT, value: "Sửa", icon: <MaterialIcons name="edit" size={24} color="blue" /> });
+            if (voucherTemplates.length > 0) {
+                menu.push({});
+                menu.push({ id: ActionMenu.PRINT, value: "In", icon: <MaterialIcons name="print" size={24} color="violet" /> });
+            }
+            setDataMenu(menu);
+            getData(infoPage.page);
+        }, setRunApi)
+        // getData(infoPage.page);
     }, [])
 
     const onRefresh = () => {
@@ -67,21 +132,23 @@ const WindowData = (progs: IMenuWindow) => {
             getData(infoPage.page + 1);
         }
     };
-    const onDelete = () => {
+    const onPrint = () => {
+        alert('Print Item ...');
+    }
+    const onDelete = (itemDel: any) => {
         showSweetAlert({
             text: 'Bạn có muốn xóa không',
             cancelButtonText: "Không",
             confirmButtonText: "Có",
             showCancelButton: true,
             onConfirm: () => {
-                setModalVisible(false);
                 const config = {
                     headers: {
                         "X-Menu": menuId,
                     }
                 }
-                deleteApiLink(API_LINK.WINDOW.DELETE + itemSelect.id, config, (res) => {
-                    setData((data) => data.filter(item => item.id !== itemSelect.id));
+                deleteApiLink(API_LINK.WINDOW.DELETE + itemDel.id, config, (res) => {
+                    getData(1, () => setModalVisible(false));
                 }, setRunApi)
             },
             type: 'question'
@@ -102,59 +169,70 @@ const WindowData = (progs: IMenuWindow) => {
                     // setData((data) => data.map((item) =>
                     //     item.id === values.id ? { ...item, ...values } : item
                     // ))
-                    setModalVisible(false);
-                    getData(1);
+                    getData(1, () => setModalVisible(false));
                 }, setRunApi);
             } else {
                 postApiLink(API_LINK.WINDOW.POST, values, (res) => {
-                    setModalVisible(false);
                     // setData([res, ...data]);
-                    getData(1);
+                    getData(1, () => setModalVisible(false));
                 }, setRunApi, config);
             }
         }
     }
-    const callBack = (type: "delete" | "update", values?: any) => {
-        type === "delete" ? onDelete() : onSave(values);
-    }
     const renderModal = useMemo(() => {
-        return <ModalWindow windowId={windowId} item={itemSelect} callBack={callBack} />
+        return <ModalWindow windowId={windowId} item={itemSelect} callBack={onSave} />
     }, [itemSelect]);
     return (
-        <View style={{ flex: 1, backgroundColor: "#c1c1c1" }}>
+        <View style={{ flex: 1, paddingHorizontal: 10, gap: 5 }}>
             <View style={[styles.header]}>
                 <Text style={styles.title}>{title}</Text>
-                <Text style={styles.detail}>{data.length}/{infoPage.numRow}</Text>
+                <View style={{ flexDirection: "row", justifyContent: "center", gap: 10, alignItems: "center" }}>
+                    <Text style={styles.detail}>{data.length}/{infoPage.numRow}</Text>
+                    {status && <VcPicker
+                        containerStyle={{ width: 130 }}
+                        value={statusId}
+                        onSelect={(v) => handTextSearch(textSearch, v)}
+                        apiUrl={API_LINK.REF.REFERENCE + oStatus.refId}
+                        placeholder="Trạng thái..."
+                        isColorItem={true}
+                    />}
+                </View>
             </View>
-
-            <VcSearchBarWin onAdd={() => selectItem(null)} />
-            <FlatList
-                keyExtractor={item => item.id}
-                data={data}
-                renderItem={({ item }: any) => {
-                    return (
-                        <PressItem
-                            key={item.id}
-                            onPress={() => selectItem(item)}
-                            item={item}>
-                            <ItemWindow windowId={windowId} item={item} />
-                        </PressItem>
-                    );
-                }}
-                ItemSeparatorComponent={(progs) => <VcLine />}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={infoPage.isRefresh}
-                        onRefresh={onRefresh}
-                        colors={[APP_COLOR.BG_DARKRED]}
-                    />
-                }
-                onEndReachedThreshold={0.1} // Khi cuộn đến 90% màn hình, bắt đầu load thêm
-                onEndReached={onEndReached}
-                ListFooterComponent={() =>
-                    infoPage.isLoading ? <ActivityIndicator size="large" color={APP_COLOR.PRIMARY2} /> : null
-                }
+            <VcSearchBarWin
+                value={textSearch}
+                setSearchPhrase={handTextSearch}
+                onAdd={() => selectItem(null, ActionMenu.EDIT)}
+                hiddenAdd={!winConfig?.permissions?.mnPlus}
             />
+            <MenuProvider>
+                <FlatList
+                    style={{ flex: 1 }}
+                    showsVerticalScrollIndicator={false}
+                    keyExtractor={item => item.id}
+                    data={data}
+                    renderItem={({ item }: any) => {
+                        return (
+                            <PressItem
+                                key={item.id}
+                                onActionSelect={selectItem}
+                                dataMenu={dataMenu}
+                                item={item}>
+                                <ItemWindow windowId={windowId} item={item} />
+                            </PressItem>
+                        );
+                    }}
+                    // ItemSeparatorComponent={(progs) => <VcLine />}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={infoPage.isRefresh}
+                            onRefresh={onRefresh}
+                            colors={[APP_COLOR.BG_DARKRED]}
+                        />
+                    }
+                    onEndReachedThreshold={0.1} // Khi cuộn đến 90% màn hình, bắt đầu load thêm
+                    onEndReached={onEndReached}
+                />
+            </MenuProvider>
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -164,16 +242,18 @@ const WindowData = (progs: IMenuWindow) => {
                 }}>
                 <View style={styles.modal}>
                     <View style={styles.headerModal}>
-                        <AntDesign name={itemSelect ? "edit" : "plus"} size={25} color="black" />
-                        <Text style={{ flex: 1, fontSize: 18, textAlign: "center" }}>{itemSelect ? "Sửa" : "Thêm mới"}</Text>
+                        <AntDesign name={itemSelect ? "edit" : "plus"} size={25} color={APP_COLOR.PRIMARY1} />
+                        <Text style={{ flex: 1, fontSize: 18, textAlign: "center", color: APP_COLOR.PRIMARY1 }}>{itemSelect ? "Sửa" : "Thêm mới"}</Text>
                         <View style={{ height: 50, width: 50, justifyContent: "center", alignItems: "center" }}>
-                            {runApi ? <ActivityIndicator size='large' color={APP_COLOR.PRIMARY2} /> : <VcButtonFlat type="clear" icon={<AntDesign name="close" size={20} color="black" />} onPress={() => setModalVisible(!modalVisible)} />}
+                            {runApi ? <ActivityIndicator size='large' color={APP_COLOR.PRIMARY2} /> : <VcButtonFlat type="clear" icon={<AntDesign name="close" size={20} color={APP_COLOR.BG_DARKORANGE} />} onPress={() => setModalVisible(!modalVisible)} />}
                         </View>
                     </View>
-                    {renderModal}
+                    <VcCadView cardStyle={{ backgroundColor: "#fff", borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}>
+                        {renderModal}
+                    </VcCadView>
                 </View>
             </Modal>
-            {(modalVisible) && <LoadingOverlay animating={false} />}
+            {(modalVisible || runApi) && <LoadingOverlay animating={false} />}
         </View>
 
     );
@@ -182,25 +262,30 @@ const WindowData = (progs: IMenuWindow) => {
 interface Ipros {
     item: any,
     children?: any,
-    onPress: (item: any) => void
+    onActionSelect: (item: any, id?: number | string) => void,
+    dataMenu: IMenu[]
 }
 const PressItem = React.memo((progs: Ipros) => {
-    const { item, children, onPress } = progs;
+    const { item, children, onActionSelect, dataMenu } = progs;
     return (
         <Pressable
             style={({ pressed }) =>
                 ([styles.pressStyle, { opacity: pressed ? 0.8 : 1 }])}
             onPress={() => {
-                onPress(item)
+                onActionSelect(item, ActionMenu.EDIT)
             }}
         >
-            {children}
+            <View style={styles.containerItem}>
+                <View style={{ flex: 1, padding: 10 }}>
+                    {children}
+                </View>
+                {dataMenu.length > 0 && <VcMenu data={dataMenu} onSelect={menuId => onActionSelect(item, menuId)} />}
+            </View>
         </Pressable>
     )
 })
 const styles = StyleSheet.create({
     header: {
-        backgroundColor: APP_COLOR.SECOND2,
         alignItems: "center",
         justifyContent: "center",
         paddingVertical: 10,
@@ -208,32 +293,40 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 25,
-        fontWeight: "600"
+        fontWeight: "bold",
+        color: "#fff"
     },
     detail: {
-        color: APP_COLOR.BG_DARKRED,
+        color: "#fff",
         padding: 10,
         borderRadius: 20,
         borderWidth: 0.5,
-        borderColor: APP_COLOR.PRIMARY2,
-        fontSize: 25,
-        fontWeight: "600"
+        borderColor: "#fff",
+        fontSize: 20,
+        fontWeight: "bold"
     },
     modal: {
         height: 'auto',
-        marginTop: 'auto'
+        marginTop: 'auto',
+        backgroundColor: APP_COLOR.GRAYLIGHT,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20
     },
     headerModal: {
         flexDirection: "row",
         paddingVertical: 5,
         paddingHorizontal: 10,
         alignItems: "center",
-        backgroundColor: APP_COLOR.SECOND2,
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20
     },
     pressStyle: {
 
+    },
+    containerItem: {
+        flexDirection: "row",
+        backgroundColor: "#fff",
+        alignItems: "center",
+        borderRadius: 10,
+        marginBottom: 2,
     }
 })
 export default WindowData;

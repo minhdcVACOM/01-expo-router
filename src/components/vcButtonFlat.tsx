@@ -26,13 +26,14 @@ const VcButtonFlat = (progs: IProgs) => {
             onPress={onPress}>
             <View style={[{
                 backgroundColor: icon ? backgroundColor ?? APP_COLOR.GRAYLIGHT : "transparent",
-                gap: 10, padding: 5, borderRadius: 20,
+                gap: 5, padding: 5, borderRadius: 20,
                 alignSelf: "center", margin: 5, justifyContent: "center", flexDirection: "row",
                 borderWidth: icon ? 0.5 : 0,
-                borderColor: APP_COLOR.PRIMARY2
+                borderColor: APP_COLOR.PRIMARY2,
+                paddingHorizontal: 10
             }, viewStyle]}>
                 {icon}
-                {title && <Text style={[{ fontWeight: "600", textDecorationLine: "underline", color: color || "black", textAlign: "center" }, textStyle]}>{title}</Text>}
+                {title && <Text style={[{ fontWeight: "bold", fontSize: 15, color: color || "black", textAlign: "center" }, textStyle]}>{title}</Text>}
             </View>
         </Pressable>
     )

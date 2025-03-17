@@ -87,13 +87,6 @@ const HomeBarChart = (progs: IProgs) => {
                     maxValue={maxValue}
                     height={width / 3 - 25}
                     onPress={(v: any) => {
-                        // showSweetAlert({
-                        //     title: v.title,
-                        //     text: "Số lượng: " + v.value,
-                        //     showCancelButton: false,
-                        //     confirmButtonText: 'Xác nhận',
-                        //     type: 'info'
-                        // });
                         Helper.toastShow(v.title + " số lượng: " + v.value, true);
                     }}
                 />

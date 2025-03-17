@@ -1,3 +1,4 @@
+import { APP_COLOR } from "@/utils/constant";
 import React from "react";
 import { StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from "react-native"
 interface IProgs {
@@ -14,19 +15,12 @@ const VcCadView = (pros: IProgs) => {
     )
 }
 const styles = StyleSheet.create({
-    title: {
-        width: "100%",
-        backgroundColor: "rgba(0, 0, 0, 0.2)",
-        textAlign: "center",
-        fontWeight: "800",
-        color: "#fff",
-        paddingVertical: 5,
-        marginBottom: 5,
-    },
     card: {
-        backgroundColor: 'rgba(0, 0, 0, 0.4)',
+        backgroundColor: 'rgba(255, 255, 255, 0.5)',
         borderRadius: 20,
-        padding: 10
+        padding: 10,
+        borderWidth: 0.5,
+        borderColor: APP_COLOR.PRIMARY1
     }
 })
 export default VcCadView;

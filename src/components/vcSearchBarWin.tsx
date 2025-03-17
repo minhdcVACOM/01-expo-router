@@ -1,9 +1,10 @@
-import React, { useState } from "react";
-import { StyleSheet, TextInput, View, Keyboard, Button } from "react-native";
-import { Feather, Entypo, AntDesign } from "@expo/vector-icons";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, TextInput, View, Keyboard, Button, StyleProp, ViewStyle } from "react-native";
+import { Entypo, AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import VcButtonFlat from "./vcButtonFlat";
 import { APP_COLOR } from "@/utils/constant";
+import VcVoice from "./vcVoice";
 
 interface IProgs {
     setClicked?: (v: boolean) => void,
@@ -13,28 +14,35 @@ interface IProgs {
     textColor?: string,
     onPress?: () => void,
     onAdd?: () => void,
+    hiddenAdd?: boolean,
     hiddenIconBack?: boolean,
-    value?: string
+    value?: string,
+    style?: StyleProp<ViewStyle>
 }
 const VcSearchBarWin = (props: IProgs) => {
     const {
         setClicked, setSearchPhrase,
         colorIcon, backgroundColor, textColor,
-        onPress, onAdd, hiddenIconBack, value
+        onPress, onAdd, hiddenAdd, hiddenIconBack, value, style
     } = props;
+
     const [txtSearch, setTxtSearch] = useState<string>(value ?? "");
     const router = useRouter();
+
     return (
-        <View style={[styles.searchBar, { backgroundColor: backgroundColor || "#fff" }]}>
+        <View style={[styles.searchBar, { backgroundColor: backgroundColor || "#fff" }, style]}>
             {!hiddenIconBack && <VcButtonFlat
+                type="clear"
+                viewStyle={{ backgroundColor: "transparent", borderWidth: 0 }}
                 onPress={() => {
                     if (onPress)
                         onPress()
                     else
                         router.back();
                 }}
-                icon={<AntDesign name="arrowleft" size={25} color="black" />}
+                icon={<AntDesign name="arrowleft" size={25} color={APP_COLOR.PRIMARY1} />}
             />}
+            <VcVoice onSearch={setTxtSearch} />
             <TextInput
                 style={[styles.input, { color: textColor || "#000" }]}
                 placeholder="Tìm kiếm"
@@ -54,9 +62,9 @@ const VcSearchBarWin = (props: IProgs) => {
                     Keyboard.dismiss();
                 }} />
             )}
-            {onAdd && <VcButtonFlat
+            {!hiddenAdd && onAdd && <VcButtonFlat
                 onPress={onAdd}
-                icon={<AntDesign name="plus" size={24} color={APP_COLOR.BLUE} />}
+                icon={<AntDesign name="plus" size={24} color={APP_COLOR.PRIMARY1} />}
                 type="clear"
             />}
         </View>
@@ -68,12 +76,9 @@ export default VcSearchBarWin;
 const styles = StyleSheet.create({
     searchBar: {
         flexDirection: "row",
-        borderBottomLeftRadius: 6,
-        borderBottomRightRadius: 6,
+        borderRadius: 10,
         alignItems: "center",
         justifyContent: "space-evenly",
-        paddingRight: 10,
-        gap: 5,
         borderWidth: 0.5,
         borderColor: APP_COLOR.PRIMARY2
     },

@@ -4,10 +4,10 @@ import { APP_COLOR } from "@/utils/constant";
 import LoadingOverlay from "./overlay";
 const styles = StyleSheet.create({
     btnContainer: {
-        borderColor: APP_COLOR.MEDIUM,
+        borderColor: APP_COLOR.PRIMARY1,
         backgroundColor: APP_COLOR.BG_DARKRED,
-        borderWidth: 1,
-        borderRadius: 6,
+        borderWidth: 0.5,
+        borderRadius: 20,
         padding: 10,
         gap: 5,
         justifyContent: "center",

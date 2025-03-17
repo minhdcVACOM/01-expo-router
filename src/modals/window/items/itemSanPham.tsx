@@ -17,7 +17,7 @@ interface IProgs {
 const ItemSanPham = (progs: IProgs) => {
     const { item } = progs;
     return (
-        <View style={styles.container}>
+        <>
             <View style={styles.title}>
                 <Text style={{ fontWeight: "600" }}>{item.code}</Text>
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
@@ -32,14 +32,11 @@ const ItemSanPham = (progs: IProgs) => {
                     <Text style={{ fontWeight: "600", fontSize: 15, color: APP_COLOR.BG_ORANGE, width: 150, textAlign: "right" }}>{Helper.currencyFormatter(item.price)}</Text>
                 </View>
             </View>
-        </View>
+        </>
     );
 }
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: "#fff",
-        padding: 10
-    },
+
     title: {
         flexDirection: "row",
         justifyContent: "space-between"

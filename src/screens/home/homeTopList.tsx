@@ -18,23 +18,17 @@ const styles = StyleSheet.create({
         borderRadius: 10
     },
     titleFlatList: {
-        textAlign: "center",
-        padding: 10,
-        backgroundColor: APP_COLOR.BG_DARKRED,
         color: "#fff",
-        fontWeight: "600",
-        fontSize: 15,
-        borderTopRightRadius: 20,
-        borderTopLeftRadius: 20,
-        marginHorizontal: 10
+        fontWeight: "bold",
+        margin: 10,
+        fontSize: 20,
+        paddingLeft: 20
     },
     card: {
-        marginHorizontal: 0,
+        marginHorizontal: 10,
         marginVertical: 5,
-        borderRadius: 0,
-        paddingHorizontal: 0,
-        // height: 100,
-        alignItems: "center"
+        alignItems: "center",
+        height: 100
     },
     image: {
         width: 60,
@@ -107,7 +101,7 @@ const HomeTopList = () => {
                     />
                 </ScrollView>
             </VcCadView>
-            <Text style={styles.titleFlatList}>Danh sách khách hàng hỗ trợ nhiều nhất</Text>
+            <Text style={styles.titleFlatList}>Hỗ trợ nhiều nhất</Text>
         </View>
     );
 }

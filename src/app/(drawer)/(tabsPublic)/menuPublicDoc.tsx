@@ -1,11 +1,9 @@
-import { TextHeader } from "@/components/textHeader";
-import { Text, View } from "react-native";
+import ListMenuWindow from "@/screens/listMenuWindow";
+import { APP_DATA } from "@/utils/constant";
 
 const MenuPublicDoc = () => {
     return (
-        <View style={{ flex: 1, alignItems: "center" }}>
-            <TextHeader title="TÀI LIỆU" />
-        </View>
+        <ListMenuWindow title="TÀI LIỆU" data={APP_DATA.MENU_PRIVATE_DOC} />
     );
 }
 export default MenuPublicDoc;

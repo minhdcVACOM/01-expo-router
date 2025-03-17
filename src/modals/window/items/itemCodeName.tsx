@@ -14,16 +14,11 @@ interface IProgs {
 const ItemCodeName = (progs: IProgs) => {
     const { item } = progs;
     return (
-        <View style={styles.container}>
+        <>
             <Text style={{ fontWeight: "600" }}>{item.code}</Text>
             <Text style={{ color: "gray", fontSize: 18 }}>{item.name}</Text>
-        </View>
+        </>
     );
 }
-const styles = StyleSheet.create({
-    container: {
-        backgroundColor: "#fff",
-        padding: 10
-    }
-})
+
 export default ItemCodeName;

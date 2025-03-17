@@ -1,16 +1,16 @@
 {
   "expo": {
-    "name": "04-expo-router-hello-world",
-    "slug": "04-expo-router-hello-world",
+    "name": "crm-vacom",
+    "slug": "crm-vacom",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./src/assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "crm-vacom",
     "userInterfaceStyle": "automatic",
     "androidStatusBar": {
-       "backgroundColor": "#fffff1",
-       "translucent": true,
-       "barStyle": "dark-content"
+      "backgroundColor": "#fffff1",
+      "translucent": true,
+      "barStyle": "dark-content"
     },
     "splash": {
       "image": "./src/assets/images/splash.png",
@@ -25,7 +25,7 @@
         "foregroundImage": "./src/assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.x04exporouter04exporouterhelloworld"
+      "package": "com.anonymous.x04exporouter04exporouter04exporouter04exporouterhelloworld"
     },
     "web": {
       "bundler": "metro",
@@ -47,6 +47,14 @@
     "experiments": {
       "typedRoutes": true
     },
-    "newArchEnabled": true
+    "newArchEnabled": true,
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "6dd47095-4632-4d72-85a0-1a21db8c1685"
+      }
+    }
   }
 }

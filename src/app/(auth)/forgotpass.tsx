@@ -15,6 +15,7 @@ import { showSweetAlert } from "@/components/sweetalert";
 import VcButtonFlat from "@/components/vcButtonFlat";
 import VcBackButton from "@/components/vcBackButton";
 import { TextHeader } from "@/components/textHeader";
+import VcCadView from "@/components/vcCardView";
 
 interface IParams {
     tenant?: string
@@ -87,62 +88,66 @@ const ForgotPass = () => {
                 validationSchema={forgotPassSchema}
             >
                 {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
-                    <View>
+                    <View style={{ marginHorizontal: 10 }}>
                         <TextHeader title="QUÊN MẬT KHẨU" />
-                        <VcInput
-                            label="Mã truy cập"
-                            value={values.tenant}
-                            onChangeText={handleChange('tenant')}
-                            onBlur={handleBlur('tenant')}
-                            placeholder="Nhập mã truy cập"
-                            autoCapitalize="characters"
-                            textError={errors.tenant}
-                        />
-                        <VcInput
-                            label="Hòm thư"
-                            value={values.email}
-                            onChangeText={handleChange('email')}
-                            onBlur={handleBlur('email')}
-                            placeholder="Nhập địa chỉ hòm thư"
-                            keyboardType="email-address"
-                            textError={errors.email}
-                        />
-                        <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginVertical: 20 }}>
-                            <Text>Nhập mã OTP</Text>
-                            <VcButtonFlat
-                                onPress={
-                                    () => {
-                                        setTypeSubmit(1);
+                        <VcCadView>
+                            <>
+                                <VcInput
+                                    label="Mã truy cập"
+                                    value={values.tenant}
+                                    onChangeText={handleChange('tenant')}
+                                    onBlur={handleBlur('tenant')}
+                                    placeholder="Nhập mã truy cập"
+                                    autoCapitalize="characters"
+                                    textError={errors.tenant}
+                                />
+                                <VcInput
+                                    label="Hòm thư"
+                                    value={values.email}
+                                    onChangeText={handleChange('email')}
+                                    onBlur={handleBlur('email')}
+                                    placeholder="Nhập địa chỉ hòm thư"
+                                    keyboardType="email-address"
+                                    textError={errors.email}
+                                />
+                                <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginVertical: 20 }}>
+                                    <Text>Nhập mã OTP</Text>
+                                    <VcButtonFlat
+                                        onPress={
+                                            () => {
+                                                setTypeSubmit(1);
+                                                handleSubmit();
+                                            }
+                                        }
+                                        title="(Lấy mã OTP)"
+                                        textStyle={{ color: APP_COLOR.RED }}
+                                    />
+                                </View>
+                                <OTPTextView
+                                    defaultValue={values.otp}
+                                    handleTextChange={handleChange('otp')}
+                                    // ref={inputOtp}
+                                    containerStyle={{ marginHorizontal: 20 }}
+                                    textInputStyle={{
+                                        borderColor: APP_COLOR.PRIMARY1,
+                                        backgroundColor: "#fff",
+                                        borderWidth: 1,
+                                        borderRadius: 10,
+                                        borderBottomWidth: 1,
+                                        // @ts-ignore:next-line
+                                        color: APP_COLOR.BG_DARKRED
+                                    }}
+                                    inputCount={6}
+                                    tintColor={APP_COLOR.PRIMARY1}
+                                />
+                                <VcButton title="Lấy lại mật khẩu" pressStyle={{ marginHorizontal: 100, marginVertical: 20 }}
+                                    onPress={() => {
+                                        setTypeSubmit(0);
                                         handleSubmit();
-                                    }
-                                }
-                                title="(Lấy mã OTP)"
-                                textStyle={{ color: APP_COLOR.BG_PURPLE }}
-                            />
-                        </View>
-                        <OTPTextView
-                            defaultValue={values.otp}
-                            handleTextChange={handleChange('otp')}
-                            // ref={inputOtp}
-                            containerStyle={{ marginHorizontal: 20 }}
-                            textInputStyle={{
-                                borderColor: APP_COLOR.PRIMARY1,
-                                backgroundColor: "#fff",
-                                borderWidth: 1,
-                                borderRadius: 10,
-                                borderBottomWidth: 1,
-                                // @ts-ignore:next-line
-                                color: APP_COLOR.BG_DARKRED
-                            }}
-                            inputCount={6}
-                            tintColor={APP_COLOR.PRIMARY1}
-                        />
-                        <VcButton title="Lấy lại mật khẩu" pressStyle={{ marginHorizontal: 100, marginVertical: 20 }}
-                            onPress={() => {
-                                setTypeSubmit(0);
-                                handleSubmit();
-                            }} loading={loading && !typeSubmit}
-                        />
+                                    }} loading={loading && !typeSubmit}
+                                />
+                            </>
+                        </VcCadView>
                     </View >
                 )}
             </Formik>

@@ -20,6 +20,14 @@ const styles = StyleSheet.create({
         alignItems: "center",
         borderRadius: 10,
         paddingBottom: 10
+    },
+    card: {
+        height: 130,
+        flexDirection: "row",
+        marginHorizontal: 10,
+        marginVertical: 0,
+        gap: 10,
+        paddingVertical: 10,
     }
 })
 interface IData {
@@ -35,7 +43,7 @@ const HomeSticky = () => {
         apiGetDashboardListCode(res => setData(res))
     }, []);
     return (
-        <VcCadView cardStyle={{ flexDirection: "row", marginHorizontal: 0, marginVertical: 0, borderRadius: 0, gap: 10, paddingVertical: 10 }}>
+        <VcCadView cardStyle={styles.card}>
             {data.map(value => {
                 return (
                     <View key={value.code} style={[styles.item, { backgroundColor: value.backColor }]}>
@@ -48,4 +56,5 @@ const HomeSticky = () => {
         </VcCadView>
     );
 }
+
 export default HomeSticky;

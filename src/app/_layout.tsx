@@ -9,7 +9,6 @@ import { StatusBar } from "react-native";
 import BackGroundScreen from "@/components/backgroundscreen";
 import { Provider } from "react-redux";
 import { vcStore } from "@/redux/vcStore";
-import SweetAlert from "@/components/sweetalert";
 const AppLayout = () => {
     const navTheme = {
         ...DefaultTheme,
@@ -41,13 +40,13 @@ const AppLayout = () => {
                                 <Stack.Screen name="lstdvcs" options={{ headerShown: false }} />
                                 <Stack.Screen name="setting" options={{ headerShown: false, title: "Cài đặt" }} />
                                 <Stack.Screen name="windowView" options={{ headerShown: false }} />
+                                <Stack.Screen name="testScreen" options={{ headerShown: false }} />
                             </Stack>
                         </ThemeProvider>
                         {/* </SafeAreaView> */}
                     </Provider>
                 </RootSiblingParent >
             </BackGroundScreen>
-            <SweetAlert />
         </>
     );
 }

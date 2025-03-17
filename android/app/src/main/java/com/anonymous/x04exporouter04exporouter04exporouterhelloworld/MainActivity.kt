@@ -1,4 +1,4 @@
-package com.anonymous.x04exporouterhelloworld
+package com.anonymous.x04exporouter04exporouter04exporouterhelloworld
 import expo.modules.splashscreen.SplashScreenManager
 
 import android.os.Build

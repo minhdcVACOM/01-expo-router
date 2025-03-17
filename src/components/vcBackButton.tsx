@@ -30,6 +30,7 @@ const VcBackButton = (progs: IProgs) => {
     const router = useRouter();
     return (
         <VcButtonFlat
+            type="clear"
             pressStyle={{ position: "absolute", top: 5, left: 5, width: 60, zIndex: 10 }}
             onPress={() => {
                 if (onPress)
@@ -39,18 +40,6 @@ const VcBackButton = (progs: IProgs) => {
             }}
             icon={<AntDesign name="arrowleft" size={25} color="black" />}
         />
-        // <DrawerItem
-        //     label=""
-        //     style={{ position: "absolute", top: 5, left: 5, width: 60 }}
-        //     onPress={() => {
-        //         if (onPress)
-        //             onPress()
-        //         else
-        //             router.back();
-        //     }}
-        //     icon={() => (<AntDesign name="arrowleft" size={25} color="black" />)}
-        //     labelStyle={{ width: 0 }}
-        // />
     );
 }
 

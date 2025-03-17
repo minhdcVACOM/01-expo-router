@@ -21,7 +21,7 @@ extensions.configure(com.facebook.react.ReactSettingsExtension) { ex ->
   }
 }
 
-rootProject.name = '04-expo-router-hello-world'
+rootProject.name = 'crm-vacom'
 
 dependencyResolutionManagement {
   versionCatalogs {

@@ -7,8 +7,7 @@ import VcInput from "@/components/vcinput";
 import VcButton from "@/components/vcbutton";
 interface ICodeName {
     id: string,
-    code: string,
-    name: string
+    code: string
 }
 interface IProgs {
     item: ICodeName,
@@ -16,16 +15,13 @@ interface IProgs {
 }
 export const formSchema = Yup.object().shape({
     code: Yup.string()
-        .required('Phải có mã'),
-    name: Yup.string()
-        .required('Phải có tên')
+        .required('Phải có mã')
 });
-const ModalCodeName = (progs: IProgs) => {
+const ModalCode = (progs: IProgs) => {
     const { callBack } = progs;
     const initialValues = {
         id: progs?.item?.id ?? null,
-        code: progs?.item?.code ?? "",
-        name: progs?.item?.name ?? ""
+        code: progs?.item?.code ?? ""
     }
     const onSubmit = (values: typeof initialValues) => {
         // chuẩn hóa dữ liệu
@@ -48,23 +44,7 @@ const ModalCodeName = (progs: IProgs) => {
                                 onChangeText={handleChange('code')}
                                 onBlur={handleBlur('code')}
                                 textError={errors.code}
-                                autoCapitalize="characters"
-                                containerStyle={{ width: "50%" }}
                             />
-                            <VcInput
-                                label="Tên"
-                                value={values.name}
-                                onChangeText={handleChange('name')}
-                                onBlur={handleBlur('name')}
-                                textError={errors.name}
-                            />
-                            {/* <VcPickerMutySelect
-                                label="Người dùng"
-                                apiUrl={API_LINK.REF.USER}
-                                fDisplay="name"
-                                fShow="name"
-                            />
-                            <VcInputNumber label="Nhập số" placeholder="Nhập giá tiền" /> */}
                         </View>
                         <View style={styles.footerModal}>
                             <VcButton title="Ghi" btnStyle={{ width: 100 }} onPress={handleSubmit} />
@@ -95,4 +75,4 @@ const styles = StyleSheet.create({
         padding: 10
     },
 })
-export default ModalCodeName;
+export default ModalCode;

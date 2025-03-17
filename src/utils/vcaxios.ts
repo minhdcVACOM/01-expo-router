@@ -49,7 +49,7 @@ vcAxios.interceptors.request.use(async (config) => {
     if (dvcsId) config.headers["X-Orgcode"] = dvcsId;
     const tenantId = await getTenant();
     if (tenantId) config.headers["__tenant"] = tenantId;
-    Keyboard.dismiss();
+    // Keyboard.dismiss();
     return config;
 }, function (error) {
     // Do something with request error

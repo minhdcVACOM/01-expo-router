@@ -45,7 +45,6 @@ const HomeHeader = () => {
                         index == 0 ? <HomeBarChart data={item} index={index} /> : <HomePieChart data={item} index={index} />
                     )}
                 />
-
                 <Pagination.Basic
                     progress={progress}
                     data={data}
@@ -60,7 +59,7 @@ const HomeHeader = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'rgba(0, 0, 0, 0.4)',
+        // backgroundColor: 'rgba(0, 0, 0, 0.4)',
         gap: 10,
         margin: 10,
         borderRadius: 20

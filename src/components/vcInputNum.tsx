@@ -1,7 +1,7 @@
 import { APP_COLOR } from "@/utils/constant";
 import { Helper } from "@/utils/helper";
 import React, { useState } from "react";
-import { TextInput, View, StyleSheet, Text } from "react-native";
+import { TextInput, View, StyleSheet, Text, StyleProp, ViewStyle } from "react-native";
 interface IProgs {
     decimalSeparator?: string,
     thousandSeparator?: string,
@@ -12,7 +12,8 @@ interface IProgs {
     disable?: boolean,
     textError?: string,
     onBlur?: (e: any) => void,
-    placeholder?: string
+    placeholder?: string,
+    style?: StyleProp<ViewStyle>
 }
 const NumberInput = ({
     decimalSeparator = ".",
@@ -20,7 +21,7 @@ const NumberInput = ({
     decimalPlaces = 2,
     number,
     setNumber,
-    label, disable, textError, onBlur, placeholder
+    label, disable, textError, onBlur, placeholder, style
 }: IProgs) => {
     const [value, setValue] = useState(number ? number + "" : "");
     const [isFocus, setIsFocus] = useState<boolean>(false);
@@ -33,10 +34,11 @@ const NumberInput = ({
         const sNum = text.replace(/ /g, "");
         return sNum ? parseFloat(sNum) : null;
     }
-    const color = disable ? APP_COLOR.GRAYDARK : textError ? (isFocus ? APP_COLOR.BG_DARKORANGE : APP_COLOR.BG_ORANGE) : (isFocus ? APP_COLOR.BG_DARKRED : APP_COLOR.PRIMARY1);
+    const color = disable ? APP_COLOR.INPUT.DISABLE[0] : textError ? (isFocus ? APP_COLOR.INPUT.FOCUS_ERROR[0] : APP_COLOR.INPUT.ERROR[0]) : (isFocus ? APP_COLOR.INPUT.FOCUS[0] : APP_COLOR.INPUT.BASE[0]);
+    const colorText = disable ? APP_COLOR.INPUT.DISABLE[1] : textError ? (isFocus ? APP_COLOR.INPUT.FOCUS_ERROR[1] : APP_COLOR.INPUT.ERROR[1]) : (isFocus ? APP_COLOR.INPUT.FOCUS[1] : APP_COLOR.INPUT.BASE[1]);
     return (
-        <View style={styles.container}>
-            {label && <Text style={[styles.title, { backgroundColor: color }]}>{label} {textError && <Text style={styles.error}>{"(" + textError + ")"}</Text>}</Text>}
+        <View style={[styles.container, style]}>
+            {label && <Text style={[styles.title, { backgroundColor: color, color: colorText }]}>{label} {textError && <Text style={[styles.error, { color: colorText }]}>{"(" + textError + ")"}</Text>}</Text>}
             <View style={[styles.content, { borderColor: color, backgroundColor: disable ? APP_COLOR.GRAYLIGHT : "#fff" }]}>
                 <TextInput
                     onFocus={() => setIsFocus(true)}

@@ -1,4 +1,4 @@
-package com.anonymous.x04exporouterhelloworld
+package com.anonymous.x04exporouter04exporouter04exporouterhelloworld
 
 import android.app.Application
 import android.content.res.Configuration

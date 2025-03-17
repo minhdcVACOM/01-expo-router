@@ -21,7 +21,6 @@ import { VcStore } from "@/redux/vcStore";
 import LoadingOverlay from "@/components/overlay";
 import { useSelector } from "react-redux";
 import { TextHeader } from "@/components/textHeader";
-
 const styles = StyleSheet.create({
     logo: {
         width: 100,

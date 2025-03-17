@@ -89,6 +89,13 @@ const VcDrawerContent = (props: any) => {
                     <DrawerItemList {...props} />
                 </DrawerContentScrollView>
             </View>
+            <DrawerItem
+                label="TestScreen"
+                onPress={() => {
+                    router.navigate({ pathname: "/testScreen", params: params });
+                }}
+                icon={({ size, color }) => (<Ionicons name="extension-puzzle-sharp" size={size} color={color} />)}
+            />
             <View style={styles.footer}>
                 <DrawerItem
                     label="Cài đặt"

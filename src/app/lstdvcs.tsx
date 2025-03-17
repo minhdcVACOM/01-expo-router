@@ -11,6 +11,7 @@ import { TextHeader } from "@/components/textHeader";
 import { useDispatch } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setDvcs } from "@/redux/slices/appSlice";
+
 const styles = StyleSheet.create({
     title: {
         fontWeight: "600",

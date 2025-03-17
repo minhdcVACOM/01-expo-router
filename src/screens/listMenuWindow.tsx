@@ -28,11 +28,12 @@ const ListMenuWindow = (progs: IProgs) => {
         }}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <TextHeader title={title} textStyle={{ flex: 1 }} />
-                <VcButtonFlat type="clear" onPress={() => dispatch(setRefresh())} icon={<MaterialIcons name="refresh" size={30} color="black" />} />
+                <VcButtonFlat type="clear" onPress={() => dispatch(setRefresh())} icon={<MaterialIcons name="refresh" size={30} color={APP_COLOR.PRIMARY2} />} />
             </View>
             <SectionList
                 sections={data}
                 keyExtractor={(item, index) => item.windowId}
+                showsVerticalScrollIndicator={false}
                 renderItem={({ item }) => renderItem(item)}
                 renderSectionHeader={({ section: { title } }) => renderSectionHeader(title, icon)}
                 ItemSeparatorComponent={(progs) => separator(progs)}
@@ -85,7 +86,9 @@ const renderItem = (item: IMenuWindow) => {
                             title: item.title,
                             menuId: item.menuId,
                             windowId: item.windowId,
-                            numRow: numRow
+                            quickSearch: item.quickSearch,
+                            fieldSearch: item.fieldSearch,
+                            status: item.status ? JSON.stringify(item.status) : null
                         }
                     })
                 }}

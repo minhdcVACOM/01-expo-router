@@ -67,14 +67,15 @@ const VcInput = (progs: IProgs) => {
     const { label, icon, disable, textError, placeholder,
         keyboardType, secureTextEntry, autoCapitalize, autoFocus, value,
         onChangeText, onBlur, containerStyle, multiline } = progs;
-    const color = disable ? APP_COLOR.GRAYDARK : textError ? (isFocus ? APP_COLOR.BG_DARKORANGE : APP_COLOR.BG_ORANGE) : (isFocus ? APP_COLOR.BG_DARKRED : APP_COLOR.PRIMARY1);
+    const color = disable ? APP_COLOR.INPUT.DISABLE[0] : textError ? (isFocus ? APP_COLOR.INPUT.FOCUS_ERROR[0] : APP_COLOR.INPUT.ERROR[0]) : (isFocus ? APP_COLOR.INPUT.FOCUS[0] : APP_COLOR.INPUT.BASE[0]);
+    const colorText = disable ? APP_COLOR.INPUT.DISABLE[1] : textError ? (isFocus ? APP_COLOR.INPUT.FOCUS_ERROR[1] : APP_COLOR.INPUT.ERROR[1]) : (isFocus ? APP_COLOR.INPUT.FOCUS[1] : APP_COLOR.INPUT.BASE[1]);
     const HeightMultiline = multiline ? { height: 80, textAlignVertical: "top" } : {};
     const _setValue = (v: any) => {
         if (onChangeText) onChangeText(v);
     }
     return (
         <View style={[styles.container, containerStyle]}>
-            {label && <Text style={[styles.title, { backgroundColor: color }]}>{label} {textError && <Text style={styles.error}>{"(" + textError + ")"}</Text>}</Text>}
+            {label && <Text style={[styles.title, { backgroundColor: color, color: colorText }]}>{label} {textError && <Text style={[styles.error, { color: colorText }]}>{"(" + textError + ")"}</Text>}</Text>}
             <View style={[styles.content, { borderColor: color, backgroundColor: disable ? APP_COLOR.GRAYLIGHT : "#fff" }]}>
                 {icon}
                 <TextInput

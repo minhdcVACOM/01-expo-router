@@ -5,11 +5,9 @@ import { Formik } from "formik";
 import React from "react";
 import VcInput from "@/components/vcinput";
 import VcButton from "@/components/vcbutton";
-import { Entypo } from "@expo/vector-icons";
 import VcDatePicker from "@/components/vcDatePicker";
 import VcPicker from "@/components/vcPicker";
 import { API_LINK } from "@/utils/apiLink";
-import VcInputNumber from "@/components/vcInputNum";
 interface INhanVien {
     id: string,
     code: string,
@@ -25,11 +23,11 @@ interface INhanVien {
 }
 interface IProgs {
     item: INhanVien,
-    callBack: (type: "delete" | "update", values?: any) => void
+    callBack: (values?: any) => void
 }
 export const formSchema = Yup.object().shape({
     code: Yup.string()
-        .required('Phải có Mã nhân viên'),
+        .required('Phải có Mã'),
     name: Yup.string()
         .required('Phải có Tên nhân viên')
 });
@@ -55,7 +53,7 @@ const ModalNhanVien = (progs: IProgs) => {
             departmentId: values.departmentId === "" ? null : values.departmentId,
             positionId: values.positionId === "" ? null : values.positionId
         }
-        callBack("update", { ...values, ..._update });
+        callBack({ ...values, ..._update });
     }
     return (
         <>
@@ -66,7 +64,7 @@ const ModalNhanVien = (progs: IProgs) => {
                 validationSchema={formSchema}
             >
                 {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
-                    <View style={{ backgroundColor: "#fff", paddingHorizontal: 10 }}>
+                    <View style={{ paddingHorizontal: 10 }}>
                         <View style={{ flexDirection: "row", justifyContent: "space-between", gap: 10, alignItems: "center" }}>
                             <VcInput
                                 label="Mã nhân viên"
@@ -111,7 +109,7 @@ const ModalNhanVien = (progs: IProgs) => {
                             value={values.note}
                             onChangeText={handleChange('note')}
                             onBlur={handleBlur('note')}
-                            textError={errors.name}
+                            textError={errors.note}
                             multiline={true}
                         />
                         {/* <VcInputNumber
@@ -119,17 +117,7 @@ const ModalNhanVien = (progs: IProgs) => {
                             setNumber={(v) => console.log("number>>", v)}
                         /> */}
                         <View style={styles.footerModal}>
-                            <VcButton
-                                icon={<Entypo name="trash" size={24} color="white" />}
-                                title="Xóa"
-                                onPress={() => callBack("delete")}
-                            />
-                            <VcButton
-                                icon={<Entypo name="edit" size={24} color="white" />}
-                                title="Ghi"
-                                onPress={handleSubmit}
-                                type="info"
-                            />
+                            <VcButton title="Ghi" btnStyle={{ width: 100 }} onPress={handleSubmit} />
                         </View>
                     </View>
                 )}
@@ -139,7 +127,6 @@ const ModalNhanVien = (progs: IProgs) => {
 }
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: "#fff",
         padding: 10,
         borderBottomWidth: 0.8,
         borderBottomColor: APP_COLOR.PRIMARY2
@@ -154,7 +141,6 @@ const styles = StyleSheet.create({
     footerModal: {
         flexDirection: "row",
         justifyContent: "flex-end",
-        backgroundColor: "#fff",
         gap: 10,
         padding: 10
     },

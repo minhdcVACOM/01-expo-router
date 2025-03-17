@@ -22,12 +22,13 @@ interface IProg {
     fShow?: string,
     value?: any,
     onSelect?: (v: any | null) => void,
-    containerStyle?: StyleProp<ViewStyle>
+    containerStyle?: StyleProp<ViewStyle>,
+    placeholder?: string,
+    isColorItem?: boolean
 }
 const VcPicker = (progs: IProg) => {
-    const { label, apiUrl, fValue, fDisplay, fShow, value, onSelect, containerStyle } = progs;
+    const { label, apiUrl, fValue, fDisplay, fShow, value, onSelect, containerStyle, placeholder, isColorItem } = progs;
     const config = { id: fValue ?? "id", value: fDisplay ?? "value", show: fShow ?? "value" };
-
     const [data, setData] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
     const [selectedItem, setSelectedItem] = useState<any>(null);
@@ -41,6 +42,16 @@ const VcPicker = (progs: IProg) => {
     // Gọi API lấy dữ liệu
     const fetchData = async () => {
         getApiLink(apiUrl, (res) => {
+            if (isColorItem) {
+                res = res.map((item: any) => {
+                    const statusItem = item.id as keyof typeof APP_COLOR.STATUS;
+                    if (statusItem) {
+                        item.bgColor = APP_COLOR.STATUS[statusItem][0];
+                        item.txtColor = APP_COLOR.STATUS[statusItem][1];
+                    }
+                    return item;
+                });
+            }
             setData(res);
             setFilteredData(res);
             if (value) {
@@ -64,19 +75,27 @@ const VcPicker = (progs: IProg) => {
         if (onSelect) onSelect(item ? item[config.id] : "");
         setModalVisible(false);
     };
-
+    const color = APP_COLOR.INPUT.BASE[0];
+    const colorText = APP_COLOR.INPUT.BASE[1];
+    const addContentStyle = isColorItem ? {
+        backgroundColor: selectedItem ? selectedItem.bgColor : "#fff",
+        borderRadius: 20
+    } : {};
+    const txtStyle = isColorItem && selectedItem ? {
+        color: selectedItem.txtColor
+    } : {};
     return (
-        <View style={{ width: "100%" }}>
+        <>
             {/* Nút mở Picker */}
             <Pressable
                 style={({ pressed }) => ({ opacity: pressed ? 0.5 : 1 })}
                 onPress={() => setModalVisible(true)}
             >
                 <View style={[styles.container, containerStyle]}>
-                    {label && <Text style={[styles.title, { backgroundColor: APP_COLOR.PRIMARY1 }]}>{label}</Text>}
-                    <View style={styles.content}>
-                        <Text style={{ flex: 1 }}>{selectedItem ? selectedItem[config.show] : <Text style={{ color: "gray" }}>Chọn một mục...</Text>}</Text>
-                        {selectedItem ? <AntDesign name="close" size={20} color="red" onPress={() => handleSelect(null)} /> : <AntDesign name="down" size={20} color={APP_COLOR.PRIMARY2} />}
+                    {label && <Text style={[styles.title, { backgroundColor: color, color: colorText }]}>{label}</Text>}
+                    <View style={[styles.content, { borderColor: color }, addContentStyle]}>
+                        <Text style={txtStyle}>{selectedItem ? selectedItem[config.show] : <Text style={{ color: APP_COLOR.GRAY }}>{placeholder ?? "Chọn một mục..."}</Text>}</Text>
+                        {selectedItem ? <AntDesign name="close" size={20} color={isColorItem ? selectedItem.txtColor : APP_COLOR.BG_ORANGE} onPress={() => handleSelect(null)} /> : <AntDesign name="down" size={20} color={color} />}
                     </View>
                 </View>
             </Pressable>
@@ -86,11 +105,12 @@ const VcPicker = (progs: IProg) => {
                 animationType="slide"
                 transparent={true}
             >
-                <View style={styles.modal}>
+                <View style={[styles.modal, { borderColor: color }]}>
                     {/* Ô tìm kiếm */}
                     <VcSearchBar
                         setSearchPhrase={handleSearch}
                         value={texFilter}
+                        colorIcon={color}
                     />
                     {/* Danh sách lựa chọn */}
                     {loading ? (
@@ -100,23 +120,34 @@ const VcPicker = (progs: IProg) => {
                     ) : (
                         <FlatList
                             data={filteredData}
-                            keyExtractor={(item: any) => item[config.id].toString()}
-                            renderItem={({ item }) => (
-                                <VcPressable
-                                    onPress={() => handleSelect(item)}
-                                >
-                                    <Text style={{ flex: 1 }}>{item[config.value]}</Text>
-                                </VcPressable>
-                            )}
+                            keyExtractor={(item: any) => item[config.id]}
+                            renderItem={({ item }) => {
+
+                                const style = isColorItem ? {
+                                    flex: 1,
+                                    color: item.txtColor
+                                } : { flex: 1 };
+                                const pressStyle = isColorItem ? { backgroundColor: item.bgColor, marginVertical: 10 } : {}
+                                return (
+                                    <VcPressable
+                                        onPress={() => handleSelect(item)}
+                                        pressStyle={pressStyle}
+                                    >
+                                        <Text style={style}>{item[config.value]}</Text>
+                                    </VcPressable>
+                                )
+                            }}
                             ItemSeparatorComponent={() => <VcLine />}
                         />
                     )}
-
                     {/* Nút đóng */}
-                    <VcButtonFlat type="clear" icon={<AntDesign name="close" size={24} color="red" />} onPress={() => setModalVisible(false)} />
+                    <VcButtonFlat type="clear" icon={<AntDesign name="close"
+                        size={24} color={APP_COLOR.BG_ORANGE} />} onPress={() => setModalVisible(false)}
+                        viewStyle={{ borderColor: color }}
+                    />
                 </View>
             </Modal>
-        </View>
+        </>
     );
 };
 const styles = StyleSheet.create({
@@ -133,6 +164,7 @@ const styles = StyleSheet.create({
         color: "#fff"
     },
     container: {
+
     },
     content: {
         borderRadius: 6,
@@ -140,7 +172,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         borderWidth: 0.5,
-        borderColor: APP_COLOR.PRIMARY1
+        backgroundColor: "#fff",
     },
     modal: {
         flex: 1,

@@ -23,15 +23,16 @@ const HomeScreen = () => {
     return (
         <SafeAreaView style={styles.container}>
             <CustomFlatList
+                showsVerticalScrollIndicator={false}
                 data={data}
                 renderItem={({ item }) => {
                     return (
                         <View style={styles.item}>
                             <View style={{ flex: 1 }}>
-                                <Text style={{ fontWeight: "600" }}>{item.cusCode}</Text>
-                                <Text style={{ color: APP_COLOR.GRAYDARK }}>{item.cusName}</Text>
+                                <Text style={{ fontWeight: "bold" }}>{item.cusCode}</Text>
+                                <Text style={{ color: "#333" }}>{item.cusName}</Text>
                             </View>
-                            <Text style={{ fontWeight: "600", fontSize: 20, color: APP_COLOR.BG_ORANGE, paddingLeft: 10 }}>{item.count}</Text>
+                            <Text style={{ fontWeight: "bold", fontSize: 20, color: APP_COLOR.RED_BG1, paddingLeft: 10 }}>{item.count}</Text>
                         </View>
                     )
                 }}
@@ -48,13 +49,9 @@ const styles = StyleSheet.create({
         overflow: "hidden"
     },
     item: {
-        borderLeftWidth: 1,
-        borderRightWidth: 1,
-        borderBottomWidth: 1,
-        borderLeftColor: APP_COLOR.MEDIUM,
-        borderRightColor: APP_COLOR.MEDIUM,
-        borderBottomColor: APP_COLOR.MEDIUM,
+        marginBottom: 2,
         padding: 10,
+        borderRadius: 10,
         marginHorizontal: 10,
         flexDirection: "row",
         justifyContent: "space-between",

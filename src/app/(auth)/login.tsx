@@ -104,7 +104,6 @@ const LoginScreen = () => {
                     <View>
                         <VcCadView cardStyle={{ marginVertical: 0 }}>
                             <VcButtonFlat onPress={EditLinkApi} title={apiLink}
-                                textStyle={{ color: "#fff" }}
                                 backgroundColor={APP_COLOR.GRAYDARK}
                             />
                             <VcInput
@@ -139,12 +138,11 @@ const LoginScreen = () => {
                             <VcButton
                                 title="Đăng nhập"
                                 onPress={handleSubmit}
-                                btnStyle={{ borderColor: APP_COLOR.SECOND1 }}
                                 pressStyle={{ paddingTop: 10, marginHorizontal: 80 }}
                                 loading={loading}
                             />
                             <View style={{ flexDirection: "row", marginHorizontal: 10, gap: 10, justifyContent: "center", alignItems: "center" }}>
-                                <Text style={{ color: "white" }}>Ghi nhớ ?</Text>
+                                <Text>Ghi nhớ ?</Text>
                                 <Switch
                                     thumbColor={"white"}
                                     trackColor={{ false: '#767577', true: APP_COLOR.BG_ORANGE }}
@@ -156,7 +154,6 @@ const LoginScreen = () => {
                                     pathname: "/(auth)/forgotpass",
                                     params: { tenant: values.tenant }
                                 })} title="Quên mật khẩu?"
-                                    textStyle={{ color: "#fff" }}
                                     backgroundColor={APP_COLOR.GRAYDARK}
                                 />
                             </View>

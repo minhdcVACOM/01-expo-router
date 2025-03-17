@@ -1,3 +1,4 @@
+import ItemCode from "@/modals/window/items/itemCode";
 import ItemCodeName from "@/modals/window/items/itemCodeName";
 import ItemNhanVien from "@/modals/window/items/itemNhanVien";
 import ItemSanPham from "@/modals/window/items/itemSanPham";
@@ -18,6 +19,10 @@ const ItemWindow = (progs: IProgs) => {
         case WINDOW_ID.SAN_PHAM:
             return (
                 <ItemSanPham item={item} />
+            );
+        case WINDOW_ID.DON_VI_TINH:
+            return (
+                <ItemCode item={item} />
             );
         default:
             return (

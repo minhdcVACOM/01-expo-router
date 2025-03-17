@@ -57,9 +57,21 @@ declare global {
         title: string,
         menuId: string,
         windowId: string,
+        fieldSearch?: string,
+        quickSearch?: string,
         marginBottom?: number,
-        numRow?: number,
-        renderItem?: (item) => React.ReactNode,
-        modalItem?: (item, callBack?: (item) => void) => React.ReactNode
+        status?: { fieldName: string, fieldType: string, refId: string }
+    }
+    interface IPermissionsWindow {
+        mnCopy?: string,
+        mnDelete?: string,
+        mnEdit?: string,
+        mnPlus?: string,
+        mnRefresh?: string
+    }
+    interface IVoucherTemplate {
+        id: string,
+        code: string,
+        name: string
     }
 }

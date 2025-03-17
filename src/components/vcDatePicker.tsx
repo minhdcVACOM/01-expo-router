@@ -41,6 +41,8 @@ interface IProgs {
 }
 const VcDatePicker = (progs: IProgs) => {
     const { label, value, setValue } = progs;
+    const color = APP_COLOR.INPUT.BASE[0];
+    const colorText = APP_COLOR.INPUT.BASE[1];
     return (
         <Pressable
             style={({ pressed }) => ({ opacity: pressed ? 0.5 : 1 })}
@@ -54,12 +56,11 @@ const VcDatePicker = (progs: IProgs) => {
                 });
             }}>
             <View style={[styles.container]}>
-                {label && <Text style={[styles.title, { backgroundColor: APP_COLOR.PRIMARY1 }]}>{label}</Text>}
+                {label && <Text style={[styles.title, { backgroundColor: color, color: colorText }]}>{label}</Text>}
                 <View style={styles.content}>
                     <Text>{Helper.formatDate(value)}</Text>
-                    {value && <AntDesign name="close" size={20} color="red" onPress={() => setValue("")} />}
+                    {value ? <AntDesign name="close" size={20} color={APP_COLOR.BG_ORANGE} onPress={() => setValue("")} /> : <AntDesign name="calendar" size={20} color={color} />}
                 </View>
-
             </View>
         </Pressable>
     );

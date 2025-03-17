@@ -33,17 +33,25 @@ const VcPickerMutySelect = (progs: IProg) => {
     const [filterSelect, setFilterSelect] = useState(false);
 
     const toggleItemSelection = (item: any) => {
+        let _selectedItems;
         if (selectedItems.find(selectedItem => selectedItem[config.id] === item[config.id])) {
-            setSelectedItems(selectedItems.filter(selectedItem => selectedItem[config.id] !== item[config.id]));
+            _selectedItems = selectedItems.filter(selectedItem => selectedItem[config.id] !== item[config.id]);
+            setSelectedItems(_selectedItems);
         } else {
-            setSelectedItems([...selectedItems, item]);
+            _selectedItems = [...selectedItems, item];
+            setSelectedItems(_selectedItems);
         }
+        setOnSelect(_selectedItems);
     };
 
     const removeItem = (item: any) => {
-        setSelectedItems(selectedItems.filter(selectedItem => selectedItem[config.id] !== item[config.id]));
+        const _selectedItems = selectedItems.filter(selectedItem => selectedItem[config.id] !== item[config.id]);
+        setSelectedItems(_selectedItems);
+        setOnSelect(_selectedItems);
     };
-
+    const setOnSelect = (itemsSelected: any[]) => {
+        if (onSelect) onSelect(itemsSelected.map(item => item[config.id]).join(","));
+    }
     // Xử lý tìm kiếm
     const handleSearch = (text: string, checkFilter: boolean) => {
         setTextFilter(text);
@@ -63,11 +71,16 @@ const VcPickerMutySelect = (progs: IProg) => {
         getApiLink(apiUrl, (res) => {
             setData(res);
             setItems(res);
+            if (value) {
+                setSelectedItems(res.filter((item: any) => value.includes(item[config.id])));
+            }
         }, setLoading)
     };
+    const color = APP_COLOR.INPUT.BASE[0];
+    const colorText = APP_COLOR.INPUT.BASE[1];
     return (
         <View style={styles.container}>
-            {label && <Text style={[styles.title, { backgroundColor: APP_COLOR.PRIMARY1 }]}>{label}</Text>}
+            {label && <Text style={[styles.title, { backgroundColor: color, color: colorText }]}>{label}</Text>}
             <View style={styles.box}>
                 <ScrollView
                     horizontal
@@ -83,33 +96,34 @@ const VcPickerMutySelect = (progs: IProg) => {
                     {selectedItems.map(item => (
                         <View key={item[config.id]} style={styles.selectedItem}>
                             <Text>{item[config.value]}</Text>
-                            <AntDesign name="close" size={20} color="red" onPress={() => removeItem(item)} />
+                            <AntDesign name="close" size={20} color={APP_COLOR.BG_ORANGE} onPress={() => removeItem(item)} />
                         </View>
                     ))}
                 </ScrollView>
-                <VcButtonFlat type='clear' viewStyle={{ backgroundColor: "transparent", borderWidth: 0 }} icon={<FontAwesome6 name="list-check" size={24} color={APP_COLOR.BG_ORANGE} />} onPress={() => setModalVisible(true)} />
+                <VcButtonFlat type='clear' viewStyle={{ backgroundColor: "transparent", borderWidth: 0 }} icon={<FontAwesome6 name="list-check" size={24} color={color} />} onPress={() => setModalVisible(true)} />
             </View>
 
 
             <Modal visible={modalVisible} transparent={true} animationType="slide">
-                <View style={styles.modalContainer}>
+                <View style={[styles.modalContainer, { borderColor: color }]}>
                     {/* Ô tìm kiếm */}
                     <View style={{ flexDirection: "row", alignItems: "center" }}>
                         <VcSearchBar
                             setSearchPhrase={(text) => handleSearch(text, filterSelect)}
                             value={texFilter}
                             style={{ flex: 1 }}
+                            colorIcon={color}
                         />
                         <VcButtonFlat type='clear' viewStyle={{ backgroundColor: "transparent", borderWidth: 0 }} icon={
                             <MaterialIcons name={
                                 filterSelect ? "check-box" : "check-box-outline-blank"
-                            } size={24} color={filterSelect ? "green" : "gray"} />
+                            } size={24} color={filterSelect ? color : "gray"} />
                         } onPress={() => handleSearch(texFilter, !filterSelect)} />
                     </View>
                     {/* Danh sách lựa chọn */}
                     {loading ? (
                         <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                            <ActivityIndicator size="large" color={APP_COLOR.PRIMARY2} />
+                            <ActivityIndicator size="large" color={color} />
                         </View>
                     ) : (
                         <FlatList
@@ -122,13 +136,16 @@ const VcPickerMutySelect = (progs: IProg) => {
                                         <Text style={{ flex: 1 }}>{item[config.value]}</Text>
                                         <MaterialIcons name={
                                             isSelect ? "check-box" : "check-box-outline-blank"
-                                        } size={24} color={isSelect ? "green" : "gray"} />
+                                        } size={24} color={isSelect ? color : "gray"} />
                                     </VcPressable>
                                 )
                             }}
                             ItemSeparatorComponent={() => <VcLine />}
                         />)}
-                    <VcButtonFlat type="clear" icon={<AntDesign name="close" size={24} color="red" />} onPress={() => setModalVisible(false)} />
+                    <VcButtonFlat type="clear" icon={<AntDesign name="close"
+                        size={24} color={APP_COLOR.BG_ORANGE} />} onPress={() => setModalVisible(false)}
+                        viewStyle={{ borderColor: color }}
+                    />
                 </View>
             </Modal>
         </View>
@@ -162,7 +179,8 @@ const styles = StyleSheet.create({
         padding: 5,
         marginHorizontal: 5,
         borderWidth: 0.5,
-        borderColor: APP_COLOR.MEDIUM
+        borderColor: APP_COLOR.MEDIUM,
+        backgroundColor: APP_COLOR.GRAYLIGHT
     },
     modalContainer: {
         flex: 1,

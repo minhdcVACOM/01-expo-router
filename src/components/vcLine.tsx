@@ -1,8 +1,10 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-
-const VcLine = () => {
-    return <View style={styles.line} />;
+import { View, StyleSheet, StyleProp, ViewStyle } from 'react-native';
+interface IProgs {
+    style?: StyleProp<ViewStyle>
+}
+const VcLine = ({ style }: IProgs) => {
+    return <View style={[styles.line, style]} />;
 };
 
 const styles = StyleSheet.create({

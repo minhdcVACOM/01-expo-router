@@ -125,9 +125,9 @@ export const apiGetLogo = async (callBack: (res: any) => void, setLoading?: (loa
         });
 }
 
-export const getApiLink = async (link: string, callBack: (res: any) => void, setLoading?: (loading: boolean) => void) => {
+export const getApiLink = async (link: string, callBack: (res: any) => void, setLoading?: (loading: boolean) => void, config?: any) => {
     if (setLoading) setLoading(true);
-    return await vcAxios.get(link)
+    return await vcAxios.get(link, config)
         .then((res: any) => {
             if (setLoading) setLoading(false);
             if (res.error) {
