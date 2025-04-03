@@ -93,7 +93,7 @@ const Setting = () => {
             default:
                 return <View />
         }
-    }, [(typeViewModal)]);
+    }, [typeViewModal]);
     useEffect(() => {
         getApiLink(API_LINK.SETTING.CURRENT_ROLE, (res) => {
             setRole(res);

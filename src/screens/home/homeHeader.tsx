@@ -9,7 +9,6 @@ import Carousel, {
 import HomeBarChart from "./homeBarChart";
 import HomePieChart from "./homePieChart";
 import { TextHeader } from "@/components/textHeader";
-
 const width = Dimensions.get("window").width - 20;
 const HomeHeader = () => {
     const ref = React.useRef<ICarouselInstance>(null);

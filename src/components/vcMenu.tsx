@@ -4,18 +4,21 @@ import { ReactNode } from "react";
 import { Text, View } from "react-native";
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from "react-native-popup-menu";
 import VcLine from "./vcLine";
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 interface IMenu {
-    id?: number | string,
-    value?: string,
-    icon?: ReactNode
+    id?: number | string;
+    value?: string;
+    icon?: ReactNode;
 }
 interface IProgs {
-    data: IMenu[],
-    onSelect: (id: number | string) => void
+    data: IMenu[];
+    onSelect: (id: number | string) => void;
+    viewMenu?: ReactNode;
+    idCurrent?: number | string;
 }
 const VcMenu = (progs: IProgs) => {
-    const { data, onSelect } = progs;
+    const { data, onSelect, viewMenu, idCurrent } = progs;
     return (
         <Menu onSelect={value => onSelect(value)}>
             <MenuTrigger customStyles={{
@@ -26,7 +29,7 @@ const VcMenu = (progs: IProgs) => {
                 triggerWrapper: { flex: 1, borderRadius: 20, justifyContent: "center" },
                 // triggerText: { borderRadius: 20 }
             }}>
-                <MaterialIcons name="more-vert" size={24} color="black" />
+                {viewMenu || <MaterialIcons name="more-vert" size={24} color="black" />}
             </MenuTrigger>
             <MenuOptions customStyles={{ optionsContainer: { borderRadius: 10, backgroundColor: APP_COLOR.SECOND2 } }}>
                 {data.map(menu => menu.id ?
@@ -34,6 +37,7 @@ const VcMenu = (progs: IProgs) => {
                         <View style={{ flexDirection: "row", gap: 10 }}>
                             {menu.icon}
                             <Text>{menu.value}</Text>
+                            {idCurrent && <AntDesign name="check" size={24} color="blue" />}
                         </View>
                     </MenuOption>
                     : <VcLine />)}

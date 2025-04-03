@@ -26,9 +26,11 @@
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="myapp"/>
-        <data android:scheme="com.anonymous.x04exporouter04exporouter04exporouterhelloworld"/>
+        <data android:scheme="com.anonymous.x04exporouter04exporouter04exporoutercrmvacom"/>
         <data android:scheme="CRM-VACOM"/>
         <data android:scheme="exp+crm-vacom"/>
+        <data android:scheme="crm-vacom"/>
+        <data android:scheme="com.anonymous.x04exporouter04exporouter04exporouter04exporouterhelloworld"/>
       </intent-filter>
     </activity>
   </application>

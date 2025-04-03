@@ -9,7 +9,6 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import LoadingOverlay from "@/components/overlay";
 import React, { useState } from "react";
 import { Formik } from 'formik';
-import BackGroundScreen from "@/components/backgroundscreen";
 import { forgotPassSchema } from "@/utils/validate";
 import { showSweetAlert } from "@/components/sweetalert";
 import VcButtonFlat from "@/components/vcButtonFlat";
